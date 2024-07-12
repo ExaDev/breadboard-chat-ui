@@ -1,5 +1,12 @@
 import React, { PropsWithChildren, useEffect } from "react";
-import { BreadboardContextType, BreadboardQuery, BreadboardUrl, LlmContext, LlmContextItem, LlmRole } from "./types";
+import {
+	BreadboardContextType,
+	BreadboardQuery,
+	BreadboardUrl,
+	LlmContext,
+	LlmContextItem,
+	LlmRole,
+} from "./types";
 
 export const BreadboardContext =
 	React.createContext<BreadboardContextType>(null);
@@ -29,8 +36,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 
 	const addLlmContextItem = (newLlmContextItem: LlmContextItem) => {
 		setLlmContext([...llmContext, newLlmContextItem]);
-	}
-	const sleep = async (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+	};
 
 	useEffect(() => {
 		if (!query) {
@@ -45,9 +51,8 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 			],
 		};
 		addLlmContextItem(breadboardResponse);
-		sleep(1000).then(() => {
-			setLoading(false);
-		});
+
+		setLoading(false);
 	}, [query]);
 	return (
 		<BreadboardContext.Provider

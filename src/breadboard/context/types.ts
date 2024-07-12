@@ -1,7 +1,8 @@
 export type BreadboardUrl = string;
 export type BreadboardQueryData = string;
+export type LlmContextData = string;
 export type LlmContextPart = {
-	text: string;
+	text: LlmContextData;
 };
 
 export const LlmRole = {
