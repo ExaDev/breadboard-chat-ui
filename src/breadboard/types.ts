@@ -1,5 +1,6 @@
 export type BreadboardUrl = string;
 export type BreadboardQueryData = string;
+export type BreadboardApiKey = string;
 export type LlmContextData = string;
 export type LlmContextPart = {
 	text: LlmContextData;
@@ -22,8 +23,10 @@ export type BreadboardResponse = Omit<LlmContextItem, "role"> & { role: "model" 
 export type BreadboardContextType = {
 	url: BreadboardUrl | null;
 	query: BreadboardQuery | null;
+	key: BreadboardApiKey | null;
 	llmContext: LlmContext;
 	setUrl: (url: BreadboardUrl) => void;
+	setApiKey: (key: BreadboardApiKey) => void;
 	setQuery: (query: BreadboardQueryData) => void;
 	loading: boolean;
 } | null;

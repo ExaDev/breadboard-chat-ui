@@ -1,5 +1,6 @@
 import React, { PropsWithChildren, useEffect } from "react";
 import {
+	BreadboardApiKey,
 	BreadboardContextType,
 	BreadboardQuery,
 	BreadboardUrl,
@@ -19,6 +20,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 	const [locallyStoredURL, setStoredValue] = useLocalStorage<BreadboardUrl | null>("breadboardUrl", null);
 	const [url, setUrl] = React.useState<BreadboardUrl | null>(locallyStoredURL);
 	const [query, setQuery] = React.useState<BreadboardQuery | null>(null);
+	const [key, setApiKey] = React.useState<BreadboardApiKey | null>(null);
 	const [llmContext, setLlmContext] = React.useState<LlmContext>([]);
 	const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -75,6 +77,8 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 				llmContext,
 				setQuery: addQuery,
 				loading,
+				key,
+				setApiKey,
 			}}
 		>
 			{children}
