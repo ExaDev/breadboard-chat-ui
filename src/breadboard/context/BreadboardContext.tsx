@@ -1,5 +1,9 @@
+import { NodeValue } from "@google-labs/breadboard";
 import React, { PropsWithChildren, useEffect } from "react";
-import { invokeBreadboard, invokeBreadboardForContext } from "../breadboardInvoker";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
+import {
+	invokeBreadboard
+} from "../breadboardInvoker";
 import {
 	BreadboardApiKey,
 	BreadboardContextType,
@@ -10,8 +14,6 @@ import {
 	LlmContextItem,
 	LlmRole,
 } from "../types";
-import { useLocalStorage } from "../../hooks/useLocalStorage";
-import { NodeValue } from "@google-labs/breadboard";
 
 export const BreadboardContext =
 	React.createContext<BreadboardContextType>(null);
@@ -19,11 +21,15 @@ export const BreadboardContext =
 export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 	children,
 }) => {
-	const [locallyStoredURL, setStoredValue] = useLocalStorage<BreadboardUrl | null>("breadboardUrl", null);
-	const [locallyStoredKey, setStoredKey] = useLocalStorage<BreadboardApiKey | null>("GEMINI_KEY", null);
+	const [locallyStoredURL, setStoredValue] =
+		useLocalStorage<BreadboardUrl | null>("breadboardUrl", null);
+	const [locallyStoredKey, setStoredKey] =
+		useLocalStorage<BreadboardApiKey | null>("GEMINI_KEY", null);
 	const [url, setUrl] = React.useState<BreadboardUrl | null>(locallyStoredURL);
 	const [query, setQuery] = React.useState<BreadboardQuery | null>(null);
-	const [key, setApiKey] = React.useState<BreadboardApiKey | null>(locallyStoredKey);
+	const [key, setApiKey] = React.useState<BreadboardApiKey | null>(
+		locallyStoredKey
+	);
 	const [llmContext, setLlmContext] = React.useState<LlmContext>([]);
 	const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -46,18 +52,24 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		setLlmContext([...llmContext, newLlmContextItem]);
 	};
 
-
 	const handleLlmResponse = (response: LlmContext) => {
-			console.log(response);
-			setLlmContext([...llmContext, ...[{
-			role: "model" as const,
-			parts: [
+		console.log(response);
+		setLlmContext([
+			...llmContext,
+			...[
 				{
-					text: ["cat", "petFinder", "helloWorld"][Math.floor(Math.random() * 3)]
-				}
-			]
-		}]]);
-			setLoading(false);
+					role: "model" as const,
+					parts: [
+						{
+							text: ["cat", "petFinder", "helloWorld"][
+								Math.floor(Math.random() * 3)
+							],
+						},
+					],
+				},
+			],
+		]);
+		setLoading(false);
 	};
 
 	const handleOutput = (outputs: Partial<Record<string, NodeValue>>) => {
@@ -70,7 +82,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		} else {
 			handleLlmResponse(context);
 		}
-	}
+	};
 
 	useEffect(() => {
 		if (!query || !url) {
@@ -79,10 +91,9 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		// invokeBreadboardForContext({ context: llmContext, boardURL: url, callback: handleLlmResponse });
 		invokeBreadboard({
 			boardURL: url,
-			inputs: { context: llmContext ,apiKey:key},
+			inputs: { context: llmContext, apiKey: key },
 			outputHandler: (outputs) => {
 				handleOutput(outputs);
-				
 			},
 		});
 	}, [query]);
@@ -90,16 +101,16 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 	const setBreaboardUrl = (url: BreadboardUrl) => {
 		setUrl(url);
 		setStoredValue(url);
-	}
+	};
 
 	const setBreadboardApiKey = (key: BreadboardApiKey) => {
 		setApiKey(key);
 		setStoredKey(key);
-	}
+	};
 
 	const handler = <T,>(obj: T) => {
 		console.log(obj);
-	}
+	};
 	return (
 		<BreadboardContext.Provider
 			value={{
@@ -118,5 +129,3 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		</BreadboardContext.Provider>
 	);
 };
-
-
