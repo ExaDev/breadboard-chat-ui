@@ -94,17 +94,27 @@ export async function invokeBreadboard({
 		interactiveSecrets: false,
 	};
 
-	await runWithRunner({
-		runner: runner.run(runConfig),
-		inputs,
-		outputHandler,
-	});
+	try {
+		console.debug("Running with runner");
+		await runWithRunner({
+			runner: runner.run(runConfig),
+			inputs,
+			outputHandler,
+		});
+	} catch (error) {
+		console.error({ error });
+	}
 
-	await runWithHarness({
-		harness: run(runConfig),
-		inputs,
-		outputHandler,
-	});
+	try {
+		console.debug("Running with harness");
+		await runWithHarness({
+			harness: run(runConfig),
+			inputs,
+			outputHandler,
+		});
+	} catch (error) {
+		console.error({ error });
+	}
 }
 
 async function runWithHarness({
@@ -119,9 +129,7 @@ async function runWithHarness({
 	for await (const runResult of harness) {
 		console.debug("=".repeat(80));
 		console.debug({ runResult });
-		console.error({
-			type: runResult.type,
-		});
+
 		if (runResult.type === "input") {
 			await runResult.reply({
 				inputs,
