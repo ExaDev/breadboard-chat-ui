@@ -1,16 +1,20 @@
 import {
 	BoardRunner,
+	GraphDescriptor,
+	InputValues,
 	Kit,
+	NodeValue,
 	OutputValues,
-	asRuntimeKit
+	asRuntimeKit,
 } from "@google-labs/breadboard";
 import { RunConfig, run } from "@google-labs/breadboard/harness";
-import { InputResolveRequest } from "@google-labs/breadboard/remote";
+import { AnyRunRequestMessage } from "@google-labs/breadboard/remote";
 import Core from "@google-labs/core-kit";
 import { BreadboardUrl, LlmContext, isLlmContext } from "./types";
 
 export type BreadboardInvokerCallback = (contextData: LlmContext) => void;
 
+type Chunk = AnyRunRequestMessage[1];
 export const invokeBreadboard = async ({
 	context,
 	boardURL,
@@ -22,6 +26,10 @@ export const invokeBreadboard = async ({
 }) => {
 	const response = await fetch(boardURL);
 	const board = await response.json();
+
+	if (!isBgl(board)) {
+		throw new Error(`Invalid board: ${JSON.stringify(board, null, 2)}`);
+	}
 
 	const runner: BoardRunner = await BoardRunner.fromGraphDescriptor(board);
 
@@ -37,29 +45,55 @@ export const invokeBreadboard = async ({
 	};
 
 	for await (const runResult of run(runConfig)) {
+		console.debug("=".repeat(80));
+		console.debug({ runResult });
 		if (runResult.type === "input") {
-			await runResult.reply({
-				inputs: {
-					context,
-				},
-			} satisfies InputResolveRequest);
+			const inputs: InputValues = {
+				context,
+			};
+			const chunk: Chunk = {
+				inputs,
+			};
+			await runResult.reply(chunk);
 		} else if (runResult.type === "output") {
-			const resultOutputs: OutputValues = runResult.data.outputs;
-			console.log("output with Kit", JSON.stringify(resultOutputs, null, 2));
-			const context = resultOutputs.context;
+			const outputs: OutputValues = runResult.data.outputs;
+			console.debug({ outputs });
+			const context: NodeValue = outputs.context;
 			if (!isLlmContext(context)) {
 				console.error(
 					"Invalid context",
-					resultOutputs.context
-						? JSON.stringify(resultOutputs.context, null, 2)
-						: "null"
+					outputs.context ? JSON.stringify(outputs.context, null, 2) : "null"
 				);
 				continue;
 			}
-			await callback(context);
+			callback(context);
 		}
 	}
 };
 
 const sleep = async (ms: number) =>
 	new Promise((resolve) => setTimeout(resolve, ms));
+
+function isBgl(board: unknown): board is GraphDescriptor {
+	if (typeof board !== "object" || board === null) {
+		console.error("Board is not an object")
+		return false;
+	}
+	if (!("nodes" in board)) {
+		console.error("Board does not have nodes")
+		return false;
+	}
+	if (!Array.isArray(board.nodes)) {
+		console.error("Board nodes is not an array")
+		return false;
+	}
+	if (!("edges" in board)) {
+		console.error("Board does not have edges")
+		return false;
+	}
+	if (!Array.isArray(board.edges)) {
+		console.error("Board edges is not an array")
+		return false;
+	}
+	return true;
+}
