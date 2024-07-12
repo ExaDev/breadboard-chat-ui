@@ -7,6 +7,7 @@ import {
 	LlmContextItem,
 	LlmRole,
 } from "./types";
+import { invokeBreadboard } from "../breadboardInvoker";
 
 export const BreadboardContext =
 	React.createContext<BreadboardContextType>(null);
@@ -38,21 +39,17 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		setLlmContext([...llmContext, newLlmContextItem]);
 	};
 
+
+	const handleLlmResponse = (response: LlmContext) => {
+			setLlmContext([...llmContext, ...response]);
+			setLoading(false);
+	};
+
 	useEffect(() => {
-		if (!query) {
+		if (!query || !url) {
 			return;
 		}
-		const breadboardResponse = {
-			role: LlmRole.model,
-			parts: [
-				{
-					text: "Hello from the model",
-				},
-			],
-		};
-		addLlmContextItem(breadboardResponse);
-
-		setLoading(false);
+		invokeBreadboard(llmContext, url, handleLlmResponse);
 	}, [query]);
 	return (
 		<BreadboardContext.Provider

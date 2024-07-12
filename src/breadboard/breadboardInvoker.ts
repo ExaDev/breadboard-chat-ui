@@ -1,11 +1,10 @@
 import { BreadboardUrl, LlmContext } from "./context/types";
 
-export type BreadboardInvokerCallback = (contextData: LlmContext) => LlmContext;
+export type BreadboardInvokerCallback = (contextData: LlmContext) => void;
 
 export const invokeBreadboard = async (context: LlmContext, boardURL: BreadboardUrl, callback: BreadboardInvokerCallback) => {
 	await sleep(1000);
 	callback([
-		...context,
 		{
 			role: "model",
 			parts: [
