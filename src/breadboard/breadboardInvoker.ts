@@ -1,4 +1,4 @@
-import { BreadboardUrl, LlmContext } from "./context/types";
+import { BreadboardUrl, LlmContext } from "./types";
 
 export type BreadboardInvokerCallback = (contextData: LlmContext) => void;
 

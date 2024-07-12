@@ -6,7 +6,7 @@ import {
 	LlmContext,
 	LlmContextItem,
 	LlmRole,
-} from "./types";
+} from "../types";
 import { invokeBreadboard } from "../breadboardInvoker";
 
 export const BreadboardContext =

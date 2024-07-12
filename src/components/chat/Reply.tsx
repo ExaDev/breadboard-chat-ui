@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react";
 import layoutStyles from "../../styles/layout.module.scss";
-import { LlmRole } from "../../breadboard/context/types";
+import { LlmRole } from "../../breadboard/types";
 
 type ReplyProps = { owner?: LlmRole } & PropsWithChildren;
 const Reply: React.FC<ReplyProps> = ({ children, owner }: ReplyProps) => {
