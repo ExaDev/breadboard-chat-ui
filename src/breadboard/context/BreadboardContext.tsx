@@ -56,7 +56,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		if (!query || !url) {
 			return;
 		}
-		invokeBreadboard(llmContext, url, handleLlmResponse);
+		invokeBreadboard({ context: llmContext, boardURL: url, callback: handleLlmResponse });
 	}, [query]);
 	return (
 		<BreadboardContext.Provider
