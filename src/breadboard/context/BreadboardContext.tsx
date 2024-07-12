@@ -50,7 +50,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 			role: "model" as const,
 			parts: [
 				{
-					text: Math.random() > 0.5 ? "cat" : "helloWorld"
+					text: ["cat", "petFinder", "helloWorld"][Math.floor(Math.random() * 3)]
 				}
 			]
 		}]]);

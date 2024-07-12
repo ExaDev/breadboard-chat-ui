@@ -53,3 +53,49 @@
 		padding-right: 10px;
 	}
 }
+
+.Select {
+  min-width: 350px;
+  position: relative;
+}
+
+.Select select {
+  appearance: none;
+  width: 100%;
+  font-size: 0.85rem;
+	padding: 0 10px;
+  background-color: var(--surface-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 10px;
+  cursor: pointer;
+	height: 40px;
+	line-height: 40px;
+	transition: opacity 200ms ease-in-out, box-shadow 200ms ease-in-out, border 200ms ease-in-out;
+	&:focus-visible{
+		outline: none;
+		box-shadow: 0 0 0 4px var(--orange-transparent);
+	}
+}
+
+.Select::before,
+.Select::after {
+  --size: 0.3rem;
+  content: "";
+  position: absolute;
+  right: 1rem;
+  pointer-events: none;
+}
+
+.Select::before {
+  border-left: var(--size) solid transparent;
+  border-right: var(--size) solid transparent;
+  border-bottom: var(--size) solid var(--border-primary);
+  top: 40%;
+}
+
+.Select::after {
+  border-left: var(--size) solid transparent;
+  border-right: var(--size) solid transparent;
+  border-top: var(--size) solid var(--border-primary);
+  top: 55%;
+}
