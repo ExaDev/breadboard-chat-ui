@@ -41,7 +41,14 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 
 
 	const handleLlmResponse = (response: LlmContext) => {
-			setLlmContext([...llmContext, ...response]);
+			setLlmContext([...llmContext, ...[{
+			role: "model" as const,
+			parts: [
+				{
+					text: Math.random() > 0.5 ? "cat" : "helloWorld"
+				}
+			]
+		}]]);
 			setLoading(false);
 	};
 

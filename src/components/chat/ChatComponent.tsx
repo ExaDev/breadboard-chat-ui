@@ -5,6 +5,7 @@ import Reply from "./Reply";
 import layoutStyles from "../../styles/layout.module.scss";
 import React from "react";
 import TextInput from "../input/TextInput";
+import { chatResponseMap } from "./chatResponseMap";
 
 const ChatComponent: React.FC = () => {
 	const breadboard = useBreadboard();
@@ -20,9 +21,18 @@ const ChatComponent: React.FC = () => {
 	return (
 		<Frame label="Chat">
 			<div className={layoutStyles.flexVertical}>
-			{breadboard.llmContext.map((query) => (
-				<>{!!query.parts[0] && <Reply owner={query.role}>{query.parts[0].text}</Reply>}</>
-			))}
+				{breadboard.llmContext.map((query) => {
+					if (query.role === "user" && query.parts[0].text) {
+						return (
+							<Reply owner={"user"}>
+								{query.parts[0].text}
+							</Reply>
+						)
+					}
+					const Component =
+						chatResponseMap[query.parts[0].text as "cat" | "helloWorld"];
+				return <>{!!query.parts[0] && <Reply owner={query.role}><Component /></Reply>}</>
+			})}
 			</div>
 			<div className={layoutStyles.flexHorizontal}>
 				<TextInput
