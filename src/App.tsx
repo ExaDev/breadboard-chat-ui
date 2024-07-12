@@ -1,7 +1,10 @@
 import "./App.css";
+import BreadboardForm from "./components/BreadboardForm";
 
 function App() {
-	return <></>;
+  return <>
+    <BreadboardForm/>
+  </>;
 }
 
 export default App;

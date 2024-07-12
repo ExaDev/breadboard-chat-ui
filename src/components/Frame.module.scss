@@ -1,0 +1,14 @@
+.frame{
+	border-radius: 20px;
+	border: 1px solid var(--border-primary);
+	padding: 30px 30px 20px 30px;
+	position: relative;
+	.label{
+		background-color: var(--surface-primary);
+		padding: 0 10px;
+		position: absolute;
+		top: -10px;
+		left: 20px;
+		font-weight: bold;
+	}
+}
