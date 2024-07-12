@@ -8,6 +8,7 @@ import {
 	LlmRole,
 } from "../types";
 import { invokeBreadboard } from "../breadboardInvoker";
+import { useLocalStorage } from "../../hooks/useLocalStorage";
 
 export const BreadboardContext =
 	React.createContext<BreadboardContextType>(null);
@@ -15,7 +16,8 @@ export const BreadboardContext =
 export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 	children,
 }) => {
-	const [url, setUrl] = React.useState<BreadboardUrl | null>(null);
+	const [locallyStoredURL, setStoredValue] = useLocalStorage<BreadboardUrl | null>("breadboardUrl", null);
+	const [url, setUrl] = React.useState<BreadboardUrl | null>(locallyStoredURL);
 	const [query, setQuery] = React.useState<BreadboardQuery | null>(null);
 	const [llmContext, setLlmContext] = React.useState<LlmContext>([]);
 	const [loading, setLoading] = React.useState<boolean>(false);
@@ -41,6 +43,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 
 
 	const handleLlmResponse = (response: LlmContext) => {
+			console.log(response);
 			setLlmContext([...llmContext, ...[{
 			role: "model" as const,
 			parts: [
@@ -58,9 +61,21 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		}
 		invokeBreadboard({ context: llmContext, boardURL: url, callback: handleLlmResponse });
 	}, [query]);
+
+	const setBreaboardUrl = (url: BreadboardUrl) => {
+		setUrl(url);
+		setStoredValue(url);
+	}
 	return (
 		<BreadboardContext.Provider
-			value={{ url, query, setUrl, llmContext, setQuery: addQuery, loading }}
+			value={{
+				url,
+				query,
+				setUrl: setBreaboardUrl,
+				llmContext,
+				setQuery: addQuery,
+				loading,
+			}}
 		>
 			{children}
 		</BreadboardContext.Provider>
