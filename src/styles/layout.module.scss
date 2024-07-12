@@ -7,3 +7,9 @@
 	display: flex;
 	gap: 15px;
 }
+.alignLeft {
+	align-self: flex-start;
+}
+.alignRight {
+	align-self: flex-end;
+}

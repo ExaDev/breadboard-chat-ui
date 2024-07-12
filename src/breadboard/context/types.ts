@@ -16,11 +16,13 @@ export type LlmContextItem = {
 export type LlmContext = LlmContextItem[];
 
 export type BreadboardQuery = Omit<LlmContextItem, "role"> & { role: "user" };
+export type BreadboardResponse = Omit<LlmContextItem, "role"> & { role: "model" };
 
 export type BreadboardContextType = {
 	url: BreadboardUrl | null;
 	query: BreadboardQuery | null;
-	queryHistory: BreadboardQuery[];
+	llmContext: LlmContext;
 	setUrl: (url: BreadboardUrl) => void;
 	setQuery: (query: BreadboardQueryData) => void;
+	loading: boolean;
 } | null;

@@ -19,9 +19,11 @@ const ChatComponent: React.FC = () => {
 	}
 	return (
 		<Frame label="Chat">
-			{breadboard.queryHistory.map((query) => (
-				<>{!!query.parts[0] && <Reply>{query.parts[0].text}</Reply>}</>
+			<div className={layoutStyles.flexVertical}>
+			{breadboard.llmContext.map((query) => (
+				<>{!!query.parts[0] && <Reply owner={query.role}>{query.parts[0].text}</Reply>}</>
 			))}
+			</div>
 			<div className={layoutStyles.flexHorizontal}>
 				<TextInput
 					value={newQuery}
@@ -31,7 +33,7 @@ const ChatComponent: React.FC = () => {
 					placeholder="Add breadboard query"
 					disabled={!breadboard.url}
 				/>
-				<Button title="Send" onClick={sendQuery} />
+				<Button title="Send" onClick={sendQuery} loading={breadboard.loading} />
 			</div>
 		</Frame>
 	);
