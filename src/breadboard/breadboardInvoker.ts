@@ -17,7 +17,7 @@ export type BreadboardInvokerCallback = (contextData: LlmContext) => void;
 type Chunk = AnyRunRequestMessage[1];
 export const invokeBreadboard = async ({
 	context,
-	boardURL,
+	boardURL = "https://exadev.github.io/boards/test.bgl.json", //for testing
 	callback,
 }: {
 	context: LlmContext;
