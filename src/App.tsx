@@ -3,7 +3,7 @@ import BreadboardForm from "./components/BreadboardForm";
 
 function App() {
   return <>
-    <BreadboardForm/>
+    <BreadboardForm />
   </>;
 }
 
