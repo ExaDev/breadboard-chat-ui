@@ -1,16 +1,23 @@
 import {
 	BoardRunner,
 	GraphDescriptor,
+	InlineDataCapabilityPart,
 	InputValues,
 	Kit,
 	NodeValue,
 	OutputValues,
+	SerializedDataStoreGroup,
+	StoredDataCapabilityPart,
 	asRuntimeKit,
 } from "@google-labs/breadboard";
 import { RunConfig, run } from "@google-labs/breadboard/harness";
 import { AnyRunRequestMessage } from "@google-labs/breadboard/remote";
 import Core from "@google-labs/core-kit";
 import { BreadboardUrl, LlmContext, isLlmContext } from "./types";
+import AgentKit from "@google-labs/agent-kit";
+import TemplateKit from "@google-labs/template-kit";
+import JSONKit from "@google-labs/json-kit";
+import GeminiKit from "@google-labs/gemini-kit";
 
 export type BreadboardInvokerContextCallback = (
 	contextData: LlmContext
@@ -49,8 +56,6 @@ export type OutputHandler = (
 	outputs: Partial<Record<string, NodeValue>>
 ) => void;
 
-
-
 export async function invokeBreadboard({
 	boardURL,
 	inputs,
@@ -69,7 +74,13 @@ export async function invokeBreadboard({
 
 	const runner: BoardRunner = await BoardRunner.fromGraphDescriptor(board);
 
-	const runTimeKits: Kit[] = [asRuntimeKit(Core)];
+	const runTimeKits: Kit[] = [
+		asRuntimeKit(Core),
+		asRuntimeKit(AgentKit),
+		asRuntimeKit(TemplateKit),
+		asRuntimeKit(JSONKit),
+		asRuntimeKit(GeminiKit),
+	];
 
 	const runConfig: RunConfig = {
 		url: ".",
@@ -78,6 +89,7 @@ export async function invokeBreadboard({
 		proxy: undefined,
 		diagnostics: true,
 		runner: runner,
+		interactiveSecrets: false,
 	};
 
 	for await (const runResult of run(runConfig)) {
