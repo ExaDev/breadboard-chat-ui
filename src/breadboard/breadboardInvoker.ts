@@ -1,23 +1,25 @@
+import AgentKit from "@google-labs/agent-kit";
 import {
 	BoardRunner,
 	GraphDescriptor,
-	InlineDataCapabilityPart,
 	InputValues,
 	Kit,
 	NodeValue,
 	OutputValues,
-	SerializedDataStoreGroup,
-	StoredDataCapabilityPart,
+	RunResult,
 	asRuntimeKit,
 } from "@google-labs/breadboard";
-import { RunConfig, run } from "@google-labs/breadboard/harness";
+import {
+	HarnessRunResult,
+	RunConfig,
+	run,
+} from "@google-labs/breadboard/harness";
 import { AnyRunRequestMessage } from "@google-labs/breadboard/remote";
 import Core from "@google-labs/core-kit";
-import { BreadboardUrl, LlmContext, isLlmContext } from "./types";
-import AgentKit from "@google-labs/agent-kit";
-import TemplateKit from "@google-labs/template-kit";
-import JSONKit from "@google-labs/json-kit";
 import GeminiKit from "@google-labs/gemini-kit";
+import JSONKit from "@google-labs/json-kit";
+import TemplateKit from "@google-labs/template-kit";
+import { BreadboardUrl, LlmContext, isLlmContext } from "./types";
 
 export type BreadboardInvokerContextCallback = (
 	contextData: LlmContext
@@ -92,7 +94,29 @@ export async function invokeBreadboard({
 		interactiveSecrets: false,
 	};
 
-	for await (const runResult of run(runConfig)) {
+	await runWithRunner({
+		runner: runner.run(runConfig),
+		inputs,
+		outputHandler,
+	});
+
+	await runWithHarness({
+		harness: run(runConfig),
+		inputs,
+		outputHandler,
+	});
+}
+
+async function runWithHarness({
+	harness,
+	inputs,
+	outputHandler,
+}: {
+	harness: AsyncGenerator<HarnessRunResult, void, unknown>;
+	inputs: InputValues;
+	outputHandler: OutputHandler;
+}): Promise<void> {
+	for await (const runResult of harness) {
 		console.debug("=".repeat(80));
 		console.debug({ runResult });
 		console.error({
@@ -104,6 +128,31 @@ export async function invokeBreadboard({
 			} satisfies Chunk);
 		} else if (runResult.type === "output") {
 			const outputs: OutputValues = runResult.data.outputs;
+			console.debug({ type: "outputs", outputs });
+			outputHandler(outputs);
+		} else {
+			console.debug({ runResult });
+		}
+	}
+}
+
+async function runWithRunner({
+	runner,
+	inputs,
+	outputHandler,
+}: {
+	runner: AsyncGenerator<RunResult, unknown, unknown>;
+	inputs: InputValues;
+	outputHandler: OutputHandler;
+}): Promise<void> {
+	for await (const runResult of runner) {
+		console.debug("=".repeat(80));
+		console.debug({ runResult });
+
+		if (runResult.type === "input") {
+			runResult.inputs = inputs;
+		} else if (runResult.type === "output") {
+			const outputs: OutputValues = runResult.outputs;
 			console.debug({ type: "outputs", outputs });
 			outputHandler(outputs);
 		} else {
