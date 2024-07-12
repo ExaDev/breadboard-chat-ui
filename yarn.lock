@@ -359,6 +359,21 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.0.tgz#a5417ae8427873f1dd08b70b3574b453e67b5f7f"
   integrity sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==
 
+"@google-labs/breadboard-schema@^1.5.1":
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/@google-labs/breadboard-schema/-/breadboard-schema-1.5.1.tgz#ee9f50b86ad0f834d0f7a39af1ebc9a06e83bc51"
+  integrity sha512-pHuBp6YlNs1E0/4UA5w2zrJGLE3y9/cqYMr8dUfBc9n+PiOe3lHiuehzqNhYpyV8R1NYLdyx3ufAtUqWwnG/oA==
+  dependencies:
+    "@types/json-schema" "^7.0.15"
+
+"@google-labs/breadboard@^0.22.0":
+  version "0.22.0"
+  resolved "https://registry.yarnpkg.com/@google-labs/breadboard/-/breadboard-0.22.0.tgz#5602639929b19f0265324796c18a066614e48b2a"
+  integrity sha512-tZuhsnDQufRURhrqB0jZHKxgr323sievqQ7+Q4y474O8VQQJEh4mg2K0OHKQod1MUZiDPSqkE7RQqlgioXcaZw==
+  dependencies:
+    "@google-labs/breadboard-schema" "^1.5.1"
+    json-schema "^0.4.0"
+
 "@humanwhocodes/config-array@^0.11.14":
   version "0.11.14"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.14.tgz#d78e481a039f7566ecc9660b4ea7fe6b1fec442b"
@@ -548,6 +563,11 @@
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.5.tgz#a6ce3e556e00fd9895dd872dd172ad0d4bd687f4"
   integrity sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==
+
+"@types/json-schema@^7.0.15":
+  version "7.0.15"
+  resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.15.tgz#596a1747233694d50f6ad8a7869fcb6f56cf5841"
+  integrity sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==
 
 "@types/prop-types@*":
   version "15.7.12"
@@ -1280,6 +1300,11 @@ json-schema-traverse@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-0.4.1.tgz#69f6a87d9513ab8bb8fe63bdb0979c448e684660"
   integrity sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==
+
+json-schema@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/json-schema/-/json-schema-0.4.0.tgz#f7de4cf6efab838ebaeb3236474cbba5a1930ab5"
+  integrity sha512-es94M3nTIfsEPisRafak+HDLfHXnKBhV3vU5eqPcS3flIWqcxJWgXHXiey3YrpaNsanY5ei1VoYEbOzijuq9BA==
 
 json-stable-stringify-without-jsonify@^1.0.1:
   version "1.0.1"
