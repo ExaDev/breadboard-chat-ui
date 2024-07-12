@@ -7,7 +7,7 @@ function App() {
 	return (
 		<div className={layoutStyles.flexVertical}>
 			<BreadboardForm />
-      <ChatComponent />
+			<ChatComponent />
 		</div>
 	);
 }
