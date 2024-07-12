@@ -3,13 +3,16 @@ import Frame from "../Frame";
 import Button from "../input/Button";
 import Reply from "./Reply";
 import layoutStyles from "../../styles/layout.module.scss";
-import React from "react";
+import chatStyles from "./chat.module.scss";
+import React, { useEffect } from "react";
 import TextInput from "../input/TextInput";
 import { chatResponseMap } from "./chatResponseMap";
+import clsx from "clsx";
 
 const ChatComponent: React.FC = () => {
 	const breadboard = useBreadboard();
 	const [newQuery, setNewQuery] = React.useState("");
+	const messagesEndRef = React.useRef<HTMLDivElement>(null);
 	const handleQueryChange = (value: string) => {
 		setNewQuery(value);
 	};
@@ -18,21 +21,28 @@ const ChatComponent: React.FC = () => {
 		breadboard.setQuery(newQuery);
 		setNewQuery("");
 	}
+
+	const scrollToBottom = () => {
+		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	};
+
+	useEffect(() => {
+		scrollToBottom();
+	}, [breadboard.llmContext]);
 	return (
 		<Frame label="Chat">
-			<div className={layoutStyles.flexVertical}>
+			<div
+				className={clsx(layoutStyles.flexVertical, chatStyles.chatWindow)}
+			>
 				{breadboard.llmContext.map((query) => {
 					if (query.role === "user" && query.parts[0].text) {
-						return (
-							<Reply owner={"user"}>
-								{query.parts[0].text}
-							</Reply>
-						)
+						return <Reply owner={"user"}>{query.parts[0].text}</Reply>;
 					}
 					const Component =
 						chatResponseMap[query.parts[0].text as "cat" | "helloWorld"];
-				return <>{!!query.parts[0] && <Reply owner={query.role}><Component /></Reply>}</>
-			})}
+					return <>{!!query.parts[0] && <Component />}</>;
+				})}
+				<div ref={messagesEndRef} />
 			</div>
 			<div className={layoutStyles.flexHorizontal}>
 				<TextInput

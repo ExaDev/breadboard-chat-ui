@@ -1,0 +1,22 @@
+.reply{
+	width: 300px;
+	background-color: var(--surface-secondary);
+	padding: 20px;
+	border-radius: 20px;
+	text-align: left;
+	& :global(img){
+		border-radius: 10px;
+		max-width: 300px;
+	}
+	&.user{
+		border-top-right-radius: 0;
+	}
+	&.model{
+		border-top-left-radius: 0;
+	}
+}
+.chatWindow{
+	max-height: 500px;
+	overflow-y: scroll;
+	padding-inline: 10px;
+}
