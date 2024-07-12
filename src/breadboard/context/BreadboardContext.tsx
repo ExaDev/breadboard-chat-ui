@@ -1,9 +1,7 @@
 import { NodeValue } from "@google-labs/breadboard";
 import React, { PropsWithChildren, useEffect } from "react";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
-import {
-	invokeBreadboard
-} from "../breadboardInvoker";
+import { invokeBreadboard } from "../breadboardInvoker";
 import {
 	BreadboardApiKey,
 	BreadboardContextType,
@@ -14,6 +12,7 @@ import {
 	LlmContextItem,
 	LlmRole,
 } from "../types";
+import { useIndexedDB } from "./useIndexedDB";
 
 export const BreadboardContext =
 	React.createContext<BreadboardContextType>(null);
@@ -24,7 +23,13 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 	const [locallyStoredURL, setStoredValue] =
 		useLocalStorage<BreadboardUrl | null>("breadboardUrl", null);
 	const [locallyStoredKey, setStoredKey] =
-		useLocalStorage<BreadboardApiKey | null>("GEMINI_KEY", null);
+		useIndexedDB<BreadboardApiKey | null>({
+			dbName: "settings",
+			objectStoreName: "Secrets",
+			name: "GEMINI_KEY",
+			initialValue: null,
+		});
+
 	const [url, setUrl] = React.useState<BreadboardUrl | null>(locallyStoredURL);
 	const [query, setQuery] = React.useState<BreadboardQuery | null>(null);
 	const [key, setApiKey] = React.useState<BreadboardApiKey | null>(
