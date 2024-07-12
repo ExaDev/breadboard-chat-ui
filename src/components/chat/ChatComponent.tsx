@@ -40,7 +40,7 @@ const ChatComponent: React.FC = () => {
 					}
 					const Component =
 						chatResponseMap[query.parts[0].text as "cat" | "helloWorld"];
-					return <>{!!query.parts[0] && <Component />}</>;
+					return <>{!!query.parts[0] && <Component handler={breadboard.componentHandler} />}</>;
 				})}
 				<div ref={messagesEndRef} />
 			</div>

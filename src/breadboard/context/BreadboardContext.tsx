@@ -68,6 +68,10 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		setUrl(url);
 		setStoredValue(url);
 	}
+
+	const handler = <T,>(obj: T) => {
+		console.log(obj);
+	}
 	return (
 		<BreadboardContext.Provider
 			value={{
@@ -79,6 +83,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 				loading,
 				key,
 				setApiKey,
+				componentHandler: handler,
 			}}
 		>
 			{children}
