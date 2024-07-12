@@ -13,6 +13,7 @@ import {
 	LlmRole,
 } from "../types";
 import { useIndexedDB } from "./useIndexedDB";
+import { set } from "zod";
 
 export const BreadboardContext =
 	React.createContext<BreadboardContextType>(null);
@@ -32,9 +33,16 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 
 	const [url, setUrl] = React.useState<BreadboardUrl | null>(locallyStoredURL);
 	const [query, setQuery] = React.useState<BreadboardQuery | null>(null);
+	// locallyStoredKey is assigned asynchronously so we need to use useEffect to set the key
 	const [key, setApiKey] = React.useState<BreadboardApiKey | null>(
-		locallyStoredKey
+		null
 	);
+	// I don't like this but it works for now NEEDS REFACTOR
+	useEffect(() => {
+		if (locallyStoredKey) {
+			setApiKey(locallyStoredKey);
+		}
+	}, [locallyStoredKey]); 
 	const [llmContext, setLlmContext] = React.useState<LlmContext>([]);
 	const [loading, setLoading] = React.useState<boolean>(false);
 
