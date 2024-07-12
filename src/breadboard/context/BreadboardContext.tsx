@@ -1,15 +1,17 @@
 import React, { PropsWithChildren, useEffect } from "react";
-import { invokeBreadboardForContext } from "../breadboardInvoker";
+import { invokeBreadboard, invokeBreadboardForContext } from "../breadboardInvoker";
 import {
 	BreadboardApiKey,
 	BreadboardContextType,
 	BreadboardQuery,
 	BreadboardUrl,
+	isLlmContext,
 	LlmContext,
 	LlmContextItem,
 	LlmRole,
 } from "../types";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
+import { NodeValue } from "@google-labs/breadboard";
 
 export const BreadboardContext =
 	React.createContext<BreadboardContextType>(null);
@@ -57,11 +59,31 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 			setLoading(false);
 	};
 
+	const handleOutput = (outputs: Partial<Record<string, NodeValue>>) => {
+		const context: NodeValue = outputs.context;
+		if (!isLlmContext(context)) {
+			console.error(
+				"Invalid context",
+				outputs.context ? JSON.stringify(outputs.context, null, 2) : "null"
+			);
+		} else {
+			handleLlmResponse(context);
+		}
+	}
+
 	useEffect(() => {
 		if (!query || !url) {
 			return;
 		}
-		invokeBreadboardForContext({ context: llmContext, boardURL: url, callback: handleLlmResponse });
+		// invokeBreadboardForContext({ context: llmContext, boardURL: url, callback: handleLlmResponse });
+		invokeBreadboard({
+			boardURL: url,
+			inputs: { context: llmContext ,apiKey:key},
+			outputHandler: (outputs) => {
+				handleOutput(outputs);
+				
+			},
+		});
 	}, [query]);
 
 	const setBreaboardUrl = (url: BreadboardUrl) => {
@@ -90,3 +112,5 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		</BreadboardContext.Provider>
 	);
 };
+
+

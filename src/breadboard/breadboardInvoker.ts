@@ -49,7 +49,7 @@ export type OutputHandler = (
 	outputs: Partial<Record<string, NodeValue>>
 ) => void;
 
-async function invokeBreadboard({
+export async function invokeBreadboard({
 	boardURL,
 	inputs,
 	outputHandler,
