@@ -10,7 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google-labs/agent-kit": "^0.8.1",
     "@google-labs/breadboard": "^0.22.0",
+    "@google-labs/core-kit": "^0.11.0",
     "clsx": "^2.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -27,5 +29,6 @@
     "eslint-plugin-react-refresh": "^0.4.7",
     "typescript": "^5.2.2",
     "vite": "^5.3.1"
-  }
+  },
+  "packageManager": "yarn@1.22.21+sha1.1959a18351b811cdeedbd484a8f86c3cc3bbaf72"
 }

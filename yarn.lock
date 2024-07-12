@@ -212,6 +212,14 @@
     "@babel/helper-validator-identifier" "^7.24.7"
     to-fast-properties "^2.0.0"
 
+"@breadboard-ai/build@0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@breadboard-ai/build/-/build-0.7.1.tgz#ebad3353880b7c0f9cbe7dc577f75c4ff0bc285a"
+  integrity sha512-yvQPw2ee9ulhBT4lISmpUW127g+/WRWwMhGmIi+k+DEy3Ve+eGnHBdNPpbOtJDzG8GK9djHbDt5uNt1VXIFujA==
+  dependencies:
+    "@google-labs/breadboard" "^0.22.0"
+    "@types/json-schema" "^7.0.15"
+
 "@esbuild/aix-ppc64@0.21.5":
   version "0.21.5"
   resolved "https://registry.yarnpkg.com/@esbuild/aix-ppc64/-/aix-ppc64-0.21.5.tgz#c7184a326533fcdf1b8ee0733e21c713b975575f"
@@ -359,6 +367,11 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.0.tgz#a5417ae8427873f1dd08b70b3574b453e67b5f7f"
   integrity sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==
 
+"@google-labs/agent-kit@^0.8.1":
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/@google-labs/agent-kit/-/agent-kit-0.8.1.tgz#64724306371e22f6b753f4d0bdadbb6f609b6e6e"
+  integrity sha512-R6auxgPWY0RsQRrlKU07kNbNY+8kJPeDBFVQoNoN5jonD9RW3f16QdQAjxFy4VFkAb6NGvcn/wvIWM3YxaduZg==
+
 "@google-labs/breadboard-schema@^1.5.1":
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/@google-labs/breadboard-schema/-/breadboard-schema-1.5.1.tgz#ee9f50b86ad0f834d0f7a39af1ebc9a06e83bc51"
@@ -373,6 +386,14 @@
   dependencies:
     "@google-labs/breadboard-schema" "^1.5.1"
     json-schema "^0.4.0"
+
+"@google-labs/core-kit@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@google-labs/core-kit/-/core-kit-0.11.0.tgz#5075010abfdf3eb040577ee439ef9d822b99069e"
+  integrity sha512-suZno70L0POVIdtwgGIPQ6/TwqGznPgnp+Y8tQswr7/ySY9aQTM3w/bL7HW7toV9TDNlCiiueSYa8IJcVZRXIA==
+  dependencies:
+    "@breadboard-ai/build" "0.7.1"
+    "@google-labs/breadboard" "^0.22.0"
 
 "@humanwhocodes/config-array@^0.11.14":
   version "0.11.14"
