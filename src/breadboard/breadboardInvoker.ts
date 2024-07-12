@@ -40,12 +40,12 @@ export const invokeBreadboardForContext = async ({
 		inputs: {
 			context,
 		} satisfies InputValues,
-		outputHandler: (ouutputs) => {
-			const context: NodeValue = ouutputs.context;
+		outputHandler: (outputs) => {
+			const context: NodeValue = outputs.context;
 			if (!isLlmContext(context)) {
 				console.error(
 					"Invalid context",
-					ouutputs.context ? JSON.stringify(ouutputs.context, null, 2) : "null"
+					outputs.context ? JSON.stringify(outputs.context, null, 2) : "null"
 				);
 			} else {
 				callback(context);
