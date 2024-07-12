@@ -28,6 +28,7 @@ export type BreadboardContextType = {
 	setUrl: (url: BreadboardUrl) => void;
 	setApiKey: (key: BreadboardApiKey) => void;
 	setQuery: (query: BreadboardQueryData) => void;
+	componentHandler: <T>(obj: T) => void;
 	loading: boolean;
 } | null;
 
@@ -47,3 +48,5 @@ export function isLlmContext(context: unknown): context is LlmContext {
 	}
 	return true;
 }
+
+export type ComponentHandler<T> = (obj: T) => void;
