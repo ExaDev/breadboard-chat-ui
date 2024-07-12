@@ -1,4 +1,5 @@
 import React, { PropsWithChildren, useEffect } from "react";
+import { invokeBreadboardForContext } from "../breadboardInvoker";
 import {
 	BreadboardContextType,
 	BreadboardQuery,
@@ -7,7 +8,6 @@ import {
 	LlmContextItem,
 	LlmRole,
 } from "../types";
-import { invokeBreadboard } from "../breadboardInvoker";
 
 export const BreadboardContext =
 	React.createContext<BreadboardContextType>(null);
@@ -49,7 +49,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		if (!query || !url) {
 			return;
 		}
-		invokeBreadboard({ context: llmContext, boardURL: url, callback: handleLlmResponse });
+		invokeBreadboardForContext({ context: llmContext, boardURL: url, callback: handleLlmResponse });
 	}, [query]);
 	return (
 		<BreadboardContext.Provider

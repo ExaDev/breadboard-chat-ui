@@ -12,17 +12,17 @@ import { AnyRunRequestMessage } from "@google-labs/breadboard/remote";
 import Core from "@google-labs/core-kit";
 import { BreadboardUrl, LlmContext, isLlmContext } from "./types";
 
-export type BreadboardInvokerCallback = (contextData: LlmContext) => void;
+export type BreadboardInvokerContextCallback = (contextData: LlmContext) => void;
 
 type Chunk = AnyRunRequestMessage[1];
-export const invokeBreadboard = async ({
+export const invokeBreadboardForContext = async ({
 	context,
 	boardURL = "https://exadev.github.io/boards/test.bgl.json", //for testing
 	callback,
 }: {
 	context: LlmContext;
 	boardURL: BreadboardUrl;
-	callback: BreadboardInvokerCallback;
+	callback: BreadboardInvokerContextCallback;
 }) => {
 	const response = await fetch(boardURL);
 	const board = await response.json();
