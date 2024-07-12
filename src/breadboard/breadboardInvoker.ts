@@ -9,7 +9,7 @@ export const invokeBreadboard = async (context: LlmContext, boardURL: Breadboard
 			role: "model",
 			parts: [
 				{
-					text: "Hello, I am a user."
+					text: Math.random() > 0.5 ? "cat" : "helloWorld"
 				}
 			]
 		}
