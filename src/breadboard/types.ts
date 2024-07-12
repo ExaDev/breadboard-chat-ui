@@ -27,3 +27,20 @@ export type BreadboardContextType = {
 	setQuery: (query: BreadboardQueryData) => void;
 	loading: boolean;
 } | null;
+
+export function isLlmContext(context: unknown): context is LlmContext {
+	if (!Array.isArray(context)) {
+		return false;
+	}
+	for (const item of context) {
+		if (!item.role || !item.parts) {
+			return false;
+		}
+		for (const part of item.parts) {
+			if (!part.text) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
