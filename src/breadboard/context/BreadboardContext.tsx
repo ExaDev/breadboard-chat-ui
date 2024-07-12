@@ -20,9 +20,10 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 	children,
 }) => {
 	const [locallyStoredURL, setStoredValue] = useLocalStorage<BreadboardUrl | null>("breadboardUrl", null);
+	const [locallyStoredKey, setStoredKey] = useLocalStorage<BreadboardApiKey | null>("GEMINI_KEY", null);
 	const [url, setUrl] = React.useState<BreadboardUrl | null>(locallyStoredURL);
 	const [query, setQuery] = React.useState<BreadboardQuery | null>(null);
-	const [key, setApiKey] = React.useState<BreadboardApiKey | null>(null);
+	const [key, setApiKey] = React.useState<BreadboardApiKey | null>(locallyStoredKey);
 	const [llmContext, setLlmContext] = React.useState<LlmContext>([]);
 	const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -91,6 +92,11 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		setStoredValue(url);
 	}
 
+	const setBreadboardApiKey = (key: BreadboardApiKey) => {
+		setApiKey(key);
+		setStoredKey(key);
+	}
+
 	const handler = <T,>(obj: T) => {
 		console.log(obj);
 	}
@@ -104,7 +110,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 				setQuery: addQuery,
 				loading,
 				key,
-				setApiKey,
+				setApiKey: setBreadboardApiKey,
 				componentHandler: handler,
 			}}
 		>
