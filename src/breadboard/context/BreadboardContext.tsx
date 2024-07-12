@@ -98,7 +98,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		});
 	}, [query]);
 
-	const setBreaboardUrl = (url: BreadboardUrl) => {
+	const setBreadboardUrl = (url: BreadboardUrl) => {
 		setUrl(url);
 		setStoredValue(url);
 	};
@@ -116,7 +116,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 			value={{
 				url,
 				query,
-				setUrl: setBreaboardUrl,
+				setUrl: setBreadboardUrl,
 				llmContext,
 				setQuery: addQuery,
 				loading,
