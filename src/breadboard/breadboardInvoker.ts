@@ -88,7 +88,7 @@ export async function invokeBreadboard({
 		diagnostics: true,
 		runner: runner,
 		interactiveSecrets: false,
-		inputs: inputs,
+		// inputs: inputs,
 	};
 
 	await runWithRunner({
