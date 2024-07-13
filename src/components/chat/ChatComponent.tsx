@@ -6,7 +6,7 @@ import Frame from "../Frame";
 import Button from "../input/Button";
 import TextInput from "../input/TextInput";
 import chatStyles from "./chat.module.scss";
-import { chatResponseMap } from "./chatResponseMap";
+import { componentMap } from "./chatResponseMap";
 import Reply from "./Reply";
 
 const ChatComponent: React.FC = () => {
@@ -32,19 +32,17 @@ const ChatComponent: React.FC = () => {
 	return (
 		<Frame label="Chat">
 			<div className={clsx(layoutStyles.flexVertical, chatStyles.chatWindow)}>
-				{breadboard.llmContext.map((query) => {
+				{breadboard.llmContext.map((query, index) => {
 					if (query.role === "user" && query.parts[0].text) {
-						return <Reply owner={"user"}>{query.parts[0].text}</Reply>;
+						return (
+							<Reply key={index} owner={"user"}>
+								{query.parts[0].text}
+							</Reply>
+						);
 					}
-					const Component =
-						chatResponseMap[query.parts[0].text as "cat" | "helloWorld"];
-					return (
-						<>
-							{!!query.parts[0] && (
-								<Component handler={breadboard.componentHandler} />
-							)}
-						</>
-					);
+
+					const Component = componentMap.getRandomComponent();
+					return <>{!!query.parts[0] && <Component key={index} />}</>;
 				})}
 				<div ref={messagesEndRef} />
 			</div>
