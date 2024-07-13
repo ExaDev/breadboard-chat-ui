@@ -1,4 +1,5 @@
 import React, { PropsWithChildren, useEffect } from "react";
+import { componentMap } from "../../components/chat/chatResponseMap";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { invokeBreadboard } from "../breadboardInvoker";
 import {
@@ -142,7 +143,23 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		invokeBreadboard({
 			boardURL: url,
 			inputs: {
-				body: makeQueryBody({ contents: llmContext }),
+				body: makeQueryBody({
+					contents: llmContext,
+					generation_config: {
+						// responseMimeType: "text/plain",
+						responseMimeType: "application/json",
+					},
+					system_instruction: {
+						parts: [
+							{
+								text: "Based on the user's input, respond by selecting one of the following responses.",
+							},
+							{
+								text: JSON.stringify(componentMap.getAllDescriptors(), null, 2),
+							},
+						],
+					},
+				}),
 				apiKey: key,
 			},
 			outputHandler: (outputs) => {
