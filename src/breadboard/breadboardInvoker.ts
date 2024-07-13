@@ -134,6 +134,8 @@ async function runWithHarness({
 	}
 }
 
+// @ts-expect-error - This function is not used in this file
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function runWithRunner({
 	runner,
 	inputs,
