@@ -4,10 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "npm-run-all --parallel tsc:watch vite",
     "build": "tsc -b && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "vite": "vite",
+    "tsc:watch": "tsc -b --watch"
   },
   "dependencies": {
     "@google-labs/agent-kit": "^0.8.1",
