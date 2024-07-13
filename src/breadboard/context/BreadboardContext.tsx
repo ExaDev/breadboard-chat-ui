@@ -21,7 +21,10 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 	children,
 }) => {
 	const [locallyStoredURL, setStoredValue] =
-		useLocalStorage<BreadboardUrl | null>("breadboardUrl", null);
+		useLocalStorage<BreadboardUrl | null>(
+			"breadboardUrl",
+			"https://exadev.github.io/boards/chat-ui.bgl.json"
+		);
 	const [locallyStoredKey, setStoredKey] =
 		useIndexedDB<BreadboardApiKey | null>({
 			dbName: "settings",
