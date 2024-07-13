@@ -6,7 +6,6 @@ import Frame from "../Frame";
 import Button from "../input/Button";
 import TextInput from "../input/TextInput";
 import chatStyles from "./chat.module.scss";
-import { componentMap } from "./chatResponseMap";
 import Reply from "./Reply";
 
 const ChatComponent: React.FC = () => {
@@ -32,17 +31,35 @@ const ChatComponent: React.FC = () => {
 	return (
 		<Frame label="Chat">
 			<div className={clsx(layoutStyles.flexVertical, chatStyles.chatWindow)}>
-				{breadboard.llmContext.map((query, index) => {
-					if (query.role === "user" && query.parts[0].text) {
-						return (
-							<Reply key={index} owner={"user"}>
-								{query.parts[0].text}
-							</Reply>
-						);
-					}
+				{breadboard.llmContext.map((item, itemIndex) => {
+					// if (item.role === "user" && item.parts[0].text) {
+					// 	return (
+					// 		<Reply key={index} owner={"user"}>
+					// 			{item.parts[0].text}
+					// 		</Reply>
+					// 	);
+					// } else if (item.role === "model" && item.parts[0].text) {
+					// 	return (
+					// 		<Reply key={index} owner={"model"}>
+					// 			{item.parts[0].text}
+					// 		</Reply>
+					// 	);
+					// }
 
-					const Component = componentMap.getRandomComponent();
-					return <>{!!query.parts[0] && <Component key={index} />}</>;
+					// const Component = componentMap.getRandomComponent();
+					// return <>{!!query.parts[0] && <Component key={index} />}</>;
+
+					// return (
+					// 	<Reply key={index} owner={item.role}>
+					// 		{item.parts[0].text}
+					// 	</Reply>
+					// );
+
+					return item.parts.map((part, partIndex) => (
+						<Reply key={`${itemIndex}.${partIndex}`} owner={item.role}>
+							{part.text}
+						</Reply>
+					));
 				})}
 				<div ref={messagesEndRef} />
 			</div>
