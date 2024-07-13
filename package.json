@@ -17,7 +17,6 @@
     "@google-labs/json-kit": "^0.3.3",
     "@google-labs/template-kit": "^0.3.5",
     "clsx": "^2.1.1",
-    "idb": "^8.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "sass": "^1.77.8",
