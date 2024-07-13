@@ -55,11 +55,37 @@ const ChatComponent: React.FC = () => {
 					// 	</Reply>
 					// );
 
-					return item.parts.map((part, partIndex) => (
-						<Reply key={`${itemIndex}.${partIndex}`} owner={item.role}>
-							{part.text}
-						</Reply>
-					));
+					return item.parts.map((part, partIndex) => {
+						// if (item.role === "user" && part.text) {
+						// }
+						// <Reply key={`${itemIndex}.${partIndex}`} owner={item.role}>
+						// 	{part.text}
+						// </Reply>
+						// <div
+						// 	key={`${itemIndex}.${partIndex}`}
+						// 	dangerouslySetInnerHTML={{ __html: part.text }}
+						// />
+						//
+						// if it's a user message render as a reply, otherwise render using dangerouslySetInnerHTML
+						if (item.role === "user" && part.text) {
+							return (
+								<Reply key={`${itemIndex}.${partIndex}`} owner={item.role}>
+									{part.text}
+								</Reply>
+							);
+						} else if (item.role === "model" && part.text) {
+							return (
+								<>
+								<Reply key={`${itemIndex}.${partIndex}.text`} owner={item.role}>
+									<pre>{part.text}</pre>
+								</Reply>
+								<Reply key={`${itemIndex}.${partIndex}.html`} owner={item.role}>
+									<div dangerouslySetInnerHTML={{ __html: part.text }} />
+								</Reply>
+								</>
+							);
+						}
+					});
 				})}
 				<div ref={messagesEndRef} />
 			</div>
