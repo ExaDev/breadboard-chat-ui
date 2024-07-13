@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { PropsWithChildren, useEffect } from "react";
 import { componentMap } from "../../components/chat/chatResponseMap";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
@@ -12,11 +13,36 @@ import {
 	LlmContextItem,
 	LlmRole,
 } from "../types";
-import { makeQueryBody } from "./makeQueryBody";
+import { makeQueryBody, SystemInstruction } from "./makeQueryBody";
 import { useIndexedDB } from "./useIndexedDB";
 
 export const BreadboardContext =
 	React.createContext<BreadboardContextType>(null);
+
+const htmlSystemPrompt: SystemInstruction = {
+	parts: [
+		{
+			text: [
+				"Based on the user's input, create an html element that fulfills the user's request.",
+				"The response should be raw html.",
+				"Include inline styles and scripts if necessary.",
+				"Do not respond with a full html page.",
+				"Do not respond with anything other than the html element.",
+			].join("\n"),
+		},
+	],
+};
+
+const componentMapSystemPrompt: SystemInstruction = {
+	parts: [
+		{
+			text: "Based on the user's input, respond by selecting one of the following responses.",
+		},
+		{
+			text: JSON.stringify(componentMap.getAllDescriptors(), null, 2),
+		},
+	],
+};
 
 export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 	children,
@@ -146,19 +172,11 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 				body: makeQueryBody({
 					contents: llmContext,
 					generation_config: {
-						// responseMimeType: "text/plain",
-						responseMimeType: "application/json",
+						responseMimeType: "text/plain",
+						// responseMimeType: "application/json",
 					},
-					system_instruction: {
-						parts: [
-							{
-								text: "Based on the user's input, respond by selecting one of the following responses.",
-							},
-							{
-								text: JSON.stringify(componentMap.getAllDescriptors(), null, 2),
-							},
-						],
-					},
+					system_instruction: htmlSystemPrompt,
+					// system_instruction: componentMapSystemPrompt,
 				}),
 				apiKey: key,
 			},
