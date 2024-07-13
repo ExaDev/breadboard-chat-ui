@@ -1,8 +1,7 @@
-import { z, ZodRawShape } from "zod";
+import React from "react";
 import ALovelyCat from "./ALovelyCat";
 import HelloWorld from "./HelloWorld";
 import PetFinderForm from "./PetFinderForm";
-import React from "react";
 
 export const chatResponseMap = {
 	cat: ALovelyCat,
@@ -10,12 +9,10 @@ export const chatResponseMap = {
 	helloWorld: HelloWorld,
 };
 
-
 type ComponentDescriptor = {
 	name: string;
 	description: string;
 };
-
 
 class ComponentMap {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
