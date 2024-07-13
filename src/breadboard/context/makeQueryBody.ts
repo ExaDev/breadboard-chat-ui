@@ -48,7 +48,7 @@ type GeneratorConfig = {
 
 export type ContextPayload = {
 	contents: LlmContext;
-	safetySettings?: SafetySetting[];
+	safety_settings?: SafetySetting[];
 	system_instruction?: SystemInstruction;
 	generation_config?: GeneratorConfig;
 };
@@ -76,16 +76,16 @@ const defaultGeneratorConfig = {
 };
 export function makeQueryBody({
 	contents,
-	safetySettings = defaultSafetySettings,
+	safety_settings = defaultSafetySettings,
 	generation_config = defaultGeneratorConfig,
 }: {
 	contents: LlmContext;
-	safetySettings?: SafetySetting[];
+	safety_settings?: SafetySetting[];
 	generation_config?: GeneratorConfig;
 }): ContextPayload {
 	return {
-		contents: contents,
-		safetySettings,
+		contents,
+		safety_settings,
 		generation_config,
 	};
 }
