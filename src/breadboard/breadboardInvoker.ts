@@ -9,11 +9,7 @@ import {
 	RunResult,
 	asRuntimeKit,
 } from "@google-labs/breadboard";
-import {
-	HarnessRunResult,
-	RunConfig,
-	run,
-} from "@google-labs/breadboard/harness";
+import { HarnessRunResult, RunConfig } from "@google-labs/breadboard/harness";
 import { AnyRunRequestMessage } from "@google-labs/breadboard/remote";
 import Core from "@google-labs/core-kit";
 import GeminiKit from "@google-labs/gemini-kit";
@@ -25,7 +21,7 @@ export type BreadboardInvokerContextCallback = (
 	contextData: LlmContext
 ) => void;
 
-type Chunk = AnyRunRequestMessage[1];
+export type Chunk = AnyRunRequestMessage[1];
 export const invokeBreadboardForContext = async ({
 	context,
 	boardURL,
@@ -92,21 +88,24 @@ export async function invokeBreadboard({
 		diagnostics: true,
 		runner: runner,
 		interactiveSecrets: false,
+		inputs: inputs,
 	};
 
-	// await runWithRunner({
-	// 	runner: runner.run(runConfig),
-	// 	inputs,
-	// 	outputHandler,
-	// });
-
-	await runWithHarness({
-		harness: run(runConfig),
+	await runWithRunner({
+		runner: runner.run(runConfig),
 		inputs,
 		outputHandler,
 	});
+
+	// await runWithHarness({
+	// 	harness: run(runConfig),
+	// 	inputs,
+	// 	outputHandler,
+	// });
 }
 
+// @ts-expect-error - This function is not used in this file
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function runWithHarness({
 	harness,
 	inputs,
@@ -118,23 +117,26 @@ async function runWithHarness({
 }): Promise<void> {
 	for await (const runResult of harness) {
 		console.debug("=".repeat(80));
-		console.debug({ runResult });
-
+		console.debug({ [runResult.type]: runResult });
 		if (runResult.type === "input") {
-			await runResult.reply({
-				inputs,
-			} satisfies Chunk);
+			console.log({ inputs });
+			// await runResult.reply({
+			// 	inputs,
+			// } satisfies Chunk);
+		} else if (runResult.type === "skip") {
+			// skip.data.missingInputs
+			console.debug({ missingInputs: runResult.data.missingInputs });
 		} else if (runResult.type === "output") {
+			console.debug({ output: runResult });
 			const outputs: OutputValues = runResult.data.outputs;
-			console.debug({ type: "outputs", outputs });
 			outputHandler(outputs);
 		} else {
-			console.debug({ runResult });
+			//
 		}
 	}
 }
 
-// @ts-expect-error - This function is not used in this file
+//// @ts-expect-error - This function is not used in this file
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function runWithRunner({
 	runner,
@@ -147,16 +149,15 @@ async function runWithRunner({
 }): Promise<void> {
 	for await (const runResult of runner) {
 		console.debug("=".repeat(80));
-		console.debug({ runResult });
+		console.debug({ [runResult.type]: runResult });
 
 		if (runResult.type === "input") {
 			runResult.inputs = inputs;
 		} else if (runResult.type === "output") {
 			const outputs: OutputValues = runResult.outputs;
-			console.debug({ type: "outputs", outputs });
 			outputHandler(outputs);
 		} else {
-			console.debug({ runResult });
+			//
 		}
 	}
 }

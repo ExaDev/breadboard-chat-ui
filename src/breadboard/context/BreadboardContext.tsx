@@ -98,10 +98,14 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		if (!query || !url) {
 			return;
 		}
-		// invokeBreadboardForContext({ context: llmContext, boardURL: url, callback: handleLlmResponse });
 		invokeBreadboard({
 			boardURL: url,
-			inputs: { context: llmContext, apiKey: key },
+			inputs: {
+				body: {
+					contents: llmContext,
+				},
+				apiKey: key,
+			},
 			outputHandler: (outputs) => {
 				handleOutput(outputs);
 			},
