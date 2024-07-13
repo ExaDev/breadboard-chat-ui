@@ -9,8 +9,9 @@ import {
 	isLlmContext,
 	LlmContext,
 	LlmContextItem,
-	LlmRole
+	LlmRole,
 } from "../types";
+import { makeQueryBody } from "./makeQueryBody";
 import { useIndexedDB } from "./useIndexedDB";
 
 export const BreadboardContext =
@@ -122,10 +123,9 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 			})
 		);
 
-
 		if (!isLlmContext(context)) {
-			console.error("Invalid LLM context", context);
-			return;
+			console.error("Context might not be valid", context);
+			// return;
 		}
 
 		handleLlmResponse(context);
@@ -135,12 +135,11 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		if (!query || !url) {
 			return;
 		}
+
 		invokeBreadboard({
 			boardURL: url,
 			inputs: {
-				body: {
-					contents: llmContext,
-				},
+				body: makeQueryBody({ contents: llmContext }),
 				apiKey: key,
 			},
 			outputHandler: (outputs) => {
