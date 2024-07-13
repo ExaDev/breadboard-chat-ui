@@ -1,13 +1,13 @@
+import clsx from "clsx";
+import React, { useEffect } from "react";
 import { useBreadboard } from "../../breadboard/context/useBreadboard";
+import layoutStyles from "../../styles/layout.module.scss";
 import Frame from "../Frame";
 import Button from "../input/Button";
-import Reply from "./Reply";
-import layoutStyles from "../../styles/layout.module.scss";
-import chatStyles from "./chat.module.scss";
-import React, { useEffect } from "react";
 import TextInput from "../input/TextInput";
+import chatStyles from "./chat.module.scss";
 import { chatResponseMap } from "./chatResponseMap";
-import clsx from "clsx";
+import Reply from "./Reply";
 
 const ChatComponent: React.FC = () => {
 	const breadboard = useBreadboard();
@@ -20,7 +20,7 @@ const ChatComponent: React.FC = () => {
 	const sendQuery = () => {
 		breadboard.setQuery(newQuery);
 		setNewQuery("");
-	}
+	};
 
 	const scrollToBottom = () => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -31,16 +31,20 @@ const ChatComponent: React.FC = () => {
 	}, [breadboard.llmContext]);
 	return (
 		<Frame label="Chat">
-			<div
-				className={clsx(layoutStyles.flexVertical, chatStyles.chatWindow)}
-			>
+			<div className={clsx(layoutStyles.flexVertical, chatStyles.chatWindow)}>
 				{breadboard.llmContext.map((query) => {
 					if (query.role === "user" && query.parts[0].text) {
 						return <Reply owner={"user"}>{query.parts[0].text}</Reply>;
 					}
 					const Component =
 						chatResponseMap[query.parts[0].text as "cat" | "helloWorld"];
-					return <>{!!query.parts[0] && <Component handler={breadboard.componentHandler} />}</>;
+					return (
+						<>
+							{!!query.parts[0] && (
+								<Component handler={breadboard.componentHandler} />
+							)}
+						</>
+					);
 				})}
 				<div ref={messagesEndRef} />
 			</div>
