@@ -13,7 +13,6 @@ import {
 	LlmRole,
 } from "../types";
 import { useIndexedDB } from "./useIndexedDB";
-import { set } from "zod";
 
 export const BreadboardContext =
 	React.createContext<BreadboardContextType>(null);
