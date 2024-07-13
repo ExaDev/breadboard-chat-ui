@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import AgentKit from "@google-labs/agent-kit";
 import {
 	BoardRunner,
@@ -104,8 +105,6 @@ export async function invokeBreadboard({
 	// });
 }
 
-// @ts-expect-error - This function is not used in this file
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function runWithHarness({
 	harness,
 	inputs,
