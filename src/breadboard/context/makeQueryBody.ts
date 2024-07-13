@@ -24,11 +24,9 @@ export const ResponseType = {
 export type ResponseType = (typeof ResponseType)[keyof typeof ResponseType];
 
 export type SystemInstruction = {
-	parts: [
-		{
-			text: string;
-		}
-	];
+	parts: {
+		text: string;
+	}[];
 };
 
 type SafetySetting = {
@@ -74,6 +72,7 @@ const defaultSafetySettings = [
 const defaultGeneratorConfig = {
 	responseMimeType: ResponseType.textPlain,
 };
+
 export function makeQueryBody({
 	contents,
 	system_instruction,
