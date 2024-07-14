@@ -120,7 +120,7 @@ export const LlmRole = {
 export type LlmRole = (typeof LlmRole)[keyof typeof LlmRole];
 
 export type LlmContextItem = {
-	role: LlmRole;
+	role?: LlmRole;
 	parts: LlmContextPart[];
 };
 

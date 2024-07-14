@@ -13,7 +13,11 @@ import {
 	LlmContextItem,
 	LlmRole,
 } from "../types";
-import { QueryBody, SystemInstruction } from "./makeQueryBody";
+import {
+	makeAgentKitInput,
+	QueryBody,
+	SystemInstruction,
+} from "./makeQueryBody";
 import { makeSchema } from "./makeSchema";
 export const BreadboardContext =
 	React.createContext<BreadboardContextType>(null);
@@ -178,12 +182,10 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 
 		invokeBreadboard({
 			boardURL: url,
-			inputs: {
+			inputs: makeAgentKitInput({
 				context: llmContext,
-			},
-			outputHandler: (outputs) => {
-				handleOutput(outputs);
-			},
+			}),
+			outputHandler: (outputs) => handleOutput(outputs),
 		});
 	}, [query]);
 
