@@ -19,6 +19,10 @@ export function makeSchema(componentMap: ComponentMap): string {
 				maximum: 1,
 				examples: [0, 0.1, 0.5, 0.9, 1],
 			},
+			parameters: {
+				description: "Optional parameters for the component",
+				type: "object"
+			}
 		},
 		required: ["component", "rationale", "certainty"],
 	} satisfies JSONSchema7);

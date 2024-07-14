@@ -6,8 +6,8 @@ import Frame from "../Frame";
 import Button from "../input/Button";
 import TextInput from "../input/TextInput";
 import chatStyles from "./chat.module.scss";
-import Reply from "./Reply";
 import { componentMap } from "./chatResponseMap";
+import Reply from "./Reply";
 
 const ChatComponent: React.FC = () => {
 	const breadboard = useBreadboard();
@@ -90,16 +90,27 @@ const ChatComponent: React.FC = () => {
 								const SelectedComponent = componentMap.getByName(
 									response.component
 								).component;
+								// component params
+								let componentParams = {};
+								try {
+									componentParams = response.parameters;
+								} catch (error) {
+									console.warn("Error parsing component parameters", error);
+								}
 								return (
 									<>
 										<Reply
 											key={`${itemIndex}.${partIndex}.text`}
 											owner={item.role}
 										>
-											<strong>Model Rationale: </strong>{response.rationale}
+											<strong>Model Rationale: </strong>
+											{response.rationale}
 										</Reply>
 
-										<SelectedComponent />
+										<SelectedComponent
+											key={`${itemIndex}.${partIndex}.component`}
+											{...componentParams}
+										/>
 									</>
 								);
 							}

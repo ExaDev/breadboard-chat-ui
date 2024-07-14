@@ -161,6 +161,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 								"Based on the user's input respond with the name of the most appropriate component.",
 								"Include a rationale and a certainty value.",
 								"Your response should be an object which conforms to the schema below.",
+								"Provide parameters for the component if necessary.",
 							].join("\n"),
 						},
 						{

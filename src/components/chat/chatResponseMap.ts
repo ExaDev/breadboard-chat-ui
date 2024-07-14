@@ -1,11 +1,14 @@
+import { JSONSchema7 } from "json-schema";
 import React from "react";
 import ALovelyCat from "./ALovelyCat";
 import HelloWorld from "./HelloWorld";
+import { LoremFlickr } from "./LoremFlickr";
 import PetFinderForm from "./PetFinderForm";
 
 export type ComponentDescriptor = {
 	name: string;
 	description: string;
+	parameters?: JSONSchema7;
 };
 
 export type DescribedComponent = {
@@ -135,6 +138,36 @@ componentMap
 			description: "A component which say hello world to the user",
 		},
 		HelloWorld
+	)
+	.add(
+		{
+			name: "LoremFlickr",
+			description: "A component which fetches a random image from loremflickr",
+			parameters: {
+				type: "object",
+				properties: {
+					width: { type: "number" },
+					height: { type: "number" },
+					keywords: { type: "array", items: { type: "string" } },
+					style: {
+						description: "The style of the image",
+						oneOf: [
+							{ const: "g", description: "Grayscale" },
+							{ const: "p", description: "Pixelated" },
+							{ const: "red", description: "Red" },
+							{ const: "green", description: "Green" },
+							{ const: "blue", description: "Blue" },
+						],
+					},
+					all: {
+						type: "boolean",
+						description: "Whether to search for all keywords inclusively",
+					},
+				},
+				required: ["width", "height"],
+			} satisfies JSONSchema7,
+		},
+		LoremFlickr
 	);
 
 function generateId(descriptor: ComponentDescriptor): string {
