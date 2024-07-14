@@ -1,16 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import AgentKit from "@google-labs/agent-kit";
 import {
-	BoardRunner,
 	GraphDescriptor,
 	InputValues,
-	Kit,
 	NodeValue,
 	OutputValues,
 	RunResult,
 	asRuntimeKit,
+	createDataStore,
+	createLoader,
+	inflateData,
 } from "@google-labs/breadboard";
-import { HarnessRunResult, RunConfig } from "@google-labs/breadboard/harness";
+import {
+	HarnessRunResult,
+	RunConfig,
+	run,
+} from "@google-labs/breadboard/harness";
 import { AnyRunRequestMessage } from "@google-labs/breadboard/remote";
 import Core from "@google-labs/core-kit";
 import GeminiKit from "@google-labs/gemini-kit";
@@ -60,10 +65,10 @@ export async function invokeBreadboard({
 	inputs,
 	outputHandler,
 }: {
-	boardURL: URL | string;
+	boardURL: string;
 	inputs: InputValues;
 	outputHandler: OutputHandler;
-}): Promise<void> {
+}) {
 	const response = await fetch(boardURL);
 	const board = await response.json();
 
@@ -71,38 +76,58 @@ export async function invokeBreadboard({
 		throw new Error(`Invalid board: ${JSON.stringify(board, null, 2)}`);
 	}
 
-	const runner: BoardRunner = await BoardRunner.fromGraphDescriptor(board);
-
-	const runTimeKits: Kit[] = [
-		asRuntimeKit(Core),
-		asRuntimeKit(AgentKit),
-		asRuntimeKit(TemplateKit),
-		asRuntimeKit(JSONKit),
-		asRuntimeKit(GeminiKit),
-	];
-
+	const store = createDataStore();
 	const runConfig: RunConfig = {
-		url: ".",
-		kits: runTimeKits,
-		remote: undefined,
-		proxy: undefined,
+		url: boardURL,
+		kits: [
+			asRuntimeKit(Core),
+			asRuntimeKit(AgentKit),
+			asRuntimeKit(TemplateKit),
+			asRuntimeKit(JSONKit),
+			asRuntimeKit(GeminiKit),
+		],
+		loader: createLoader(),
+		store,
 		diagnostics: true,
-		runner: runner,
+		// runner,
 		interactiveSecrets: false,
-		// inputs: inputs,
 	};
 
-	await runWithRunner({
-		runner: runner.run(runConfig),
-		inputs,
-		outputHandler,
-	});
+	// await runWithRunner({
+	// 	runner: runner.run(runConfig),
+	// 	inputs,
+	// 	outputHandler,
+	// });
 
 	// await runWithHarness({
 	// 	harness: run(runConfig),
 	// 	inputs,
 	// 	outputHandler,
 	// });
+
+	for await (const result of run(runConfig)) {
+		const { type, data, reply } = result as HarnessRunResult;
+		if (type === "input") {
+			await reply({ inputs });
+		} else if (type === "output") {
+			const outputs = await inflateData(store, data.outputs);
+			// return inflateData(store, data.outputs);
+			outputHandler(outputs as OutputValues);
+		} else if (type === "error") {
+			console.error({
+				$error: data.error,
+			});
+		} else if (type === "end") {
+			console.error({
+				$error: "Run completed without producing output.",
+			});
+		} else {
+			console.warn("UNKNOWN RESULT", type, data);
+		}
+	}
+	// return {
+	// $error: "Run completed without signaling end or error.",
+	// };
 }
 
 async function runWithHarness({

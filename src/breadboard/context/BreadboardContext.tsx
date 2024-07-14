@@ -13,7 +13,7 @@ import {
 	LlmContextItem,
 	LlmRole,
 } from "../types";
-import { makeQueryBody, QueryBody, SystemInstruction } from "./makeQueryBody";
+import { QueryBody, SystemInstruction } from "./makeQueryBody";
 import { makeSchema } from "./makeSchema";
 export const BreadboardContext =
 	React.createContext<BreadboardContextType>(null);
@@ -179,12 +179,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		invokeBreadboard({
 			boardURL: url,
 			inputs: {
-				body: makeQueryBody({
-					contents: llmContext,
-					// ...htmlQueryConfig,
-					...componentMapQueryConfig,
-				}),
-				apiKey: key,
+				context: llmContext,
 			},
 			outputHandler: (outputs) => {
 				handleOutput(outputs);
