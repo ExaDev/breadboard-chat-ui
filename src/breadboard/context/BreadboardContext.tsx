@@ -13,35 +13,52 @@ import {
 	LlmContextItem,
 	LlmRole,
 } from "../types";
-import { makeQueryBody, SystemInstruction } from "./makeQueryBody";
+import { makeQueryBody, QueryBody, SystemInstruction } from "./makeQueryBody";
+import { makeSchema } from "./makeSchema";
 import { useIndexedDB } from "./useIndexedDB";
-
 export const BreadboardContext =
 	React.createContext<BreadboardContextType>(null);
 
-const htmlSystemPrompt: SystemInstruction = {
-	parts: [
-		{
-			text: [
-				"Based on the user's input, create an html element that fulfills the user's request.",
-				"The response should be raw html.",
-				"Include inline styles and scripts if necessary.",
-				"Do not respond with a full html page.",
-				"Do not respond with anything other than the html element.",
-			].join("\n"),
-		},
-	],
+const htmlQueryConfig: Partial<QueryBody> = {
+	generation_config: {
+		responseMimeType: "text/plain",
+	},
+	system_instruction: {
+		parts: [
+			{
+				text: [
+					"Based on the user's input, create an html element that fulfills the user's request.",
+					"The response should be raw html.",
+					"Include inline styles and scripts if necessary.",
+					"Do not respond with a full html page.",
+					"Do not respond with anything other than the html element.",
+				].join("\n"),
+			},
+		],
+	} satisfies SystemInstruction,
 };
 
-const componentMapSystemPrompt: SystemInstruction = {
-	parts: [
-		{
-			text: "Based on the user's input, respond by selecting one of the following responses.",
-		},
-		{
-			text: JSON.stringify(componentMap.getAllDescriptors(), null, 2),
-		},
-	],
+const componentMapQueryConfig: Partial<QueryBody> = {
+	generation_config: {
+		responseMimeType: "application/json",
+	},
+	system_instruction: {
+		parts: [
+			{
+				text: [
+					"Based on the user's input respond with the name of the most appropriate component.",
+					"Include a rationale and a certainty value.",
+					"Your response should be an object which conforms to the schema below.",
+				].join("\n"),
+			},
+			{
+				text: makeSchema(componentMap),
+			},
+			{
+				text: JSON.stringify(componentMap.getAllDescriptors(), null, 2),
+			},
+		],
+	} satisfies SystemInstruction,
 };
 
 export const BreadboardProvider: React.FC<PropsWithChildren> = ({
@@ -171,12 +188,8 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 			inputs: {
 				body: makeQueryBody({
 					contents: llmContext,
-					generation_config: {
-						responseMimeType: "text/plain",
-						// responseMimeType: "application/json",
-					},
-					system_instruction: htmlSystemPrompt,
-					// system_instruction: componentMapSystemPrompt,
+					// ...htmlQueryConfig,
+					...componentMapQueryConfig,
 				}),
 				apiKey: key,
 			},

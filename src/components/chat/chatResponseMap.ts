@@ -13,7 +13,7 @@ export type DescribedComponent = {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	component: React.FC | React.FC<any>;
 };
-class ComponentMap {
+export class ComponentMap {
 	map: Map<string, DescribedComponent>;
 	constructor() {
 		this.map = new Map();
@@ -111,6 +111,9 @@ class ComponentMap {
 		const components = this.getAll();
 		const randomIndex = Math.floor(Math.random() * components.length);
 		return components[randomIndex];
+	}
+	getAllNames(): string[] {
+		return this.getAllDescriptors().map((descriptor) => descriptor.name);
 	}
 }
 
