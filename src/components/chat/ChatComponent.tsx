@@ -21,6 +21,12 @@ const ChatComponent: React.FC = () => {
 		setNewQuery("");
 	};
 
+	const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === "Enter") {
+			sendQuery();
+		}
+	};
+
 	const scrollToBottom = () => {
 		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
 	};
@@ -28,6 +34,7 @@ const ChatComponent: React.FC = () => {
 	useEffect(() => {
 		scrollToBottom();
 	}, [breadboard.llmContext]);
+
 	return (
 		<Frame label="Chat">
 			<div className={clsx(layoutStyles.flexVertical, chatStyles.chatWindow)}>
@@ -97,6 +104,7 @@ const ChatComponent: React.FC = () => {
 					name="query"
 					placeholder="Add breadboard query"
 					disabled={!breadboard.url}
+					onKeyPress={handleKeyPress}
 				/>
 				<Button title="Send" onClick={sendQuery} loading={breadboard.loading} />
 			</div>

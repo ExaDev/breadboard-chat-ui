@@ -8,6 +8,7 @@ type TextInputProps = {
 	type?: "text" | "password" | "email" | "number";
 	placeholder?: string;
 	disabled?: boolean;
+	onKeyPress?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 };
 const TextInput = ({
 	value,
@@ -17,6 +18,7 @@ const TextInput = ({
 	type = "text",
 	placeholder,
 	disabled,
+	onKeyPress,
 }: TextInputProps): React.JSX.Element => {
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (onChange) {
@@ -34,6 +36,7 @@ const TextInput = ({
 				onChange={handleChange}
 				placeholder={placeholder}
 				disabled={disabled}
+				onKeyUpCapture={onKeyPress}
 			/>
 		</div>
 	);
