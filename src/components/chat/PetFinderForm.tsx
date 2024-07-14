@@ -1,17 +1,17 @@
 import { useState } from "react";
+import { ComponentHandler } from "../../breadboard/types";
+import layoutStyles from "../../styles/layout.module.scss";
+import Button from "../input/Button";
+import Select from "../input/Select";
 import TextInput from "../input/TextInput";
 import Form from "./Form";
-import Select from "../input/Select";
-import Button from "../input/Button";
-import layoutStyles from "../../styles/layout.module.scss";
-import { ComponentHandler } from "../../breadboard/types";
 
 type PetObject = {
 	name: string;
 	type: string;
 }
 
-type PetFinderFormProps = {
+export type PetFinderFormProps = {
 	handler: ComponentHandler<PetObject>;
 }
 const PetFinderForm: React.FC<PetFinderFormProps> = ({handler}) => {

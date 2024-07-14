@@ -1,29 +1,33 @@
 import React from "react";
 import ALovelyCat from "./ALovelyCat";
 import HelloWorld from "./HelloWorld";
-import PetFinderForm from "./PetFinderForm";
+import PetFinderForm, { PetFinderFormProps } from "./PetFinderForm";
 
 export type ComponentDescriptor = {
 	name: string;
 	description: string;
 };
 
-export type DescribedComponent = {
+export interface DescribedComponent<P extends object, C extends React.FC<P>> {
 	descriptor: ComponentDescriptor;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	component: React.FC | React.FC<any>;
-};
+	component: C;
+}
 export class ComponentMap {
-	map: Map<string, DescribedComponent>;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	map: Map<string, DescribedComponent<any, any>>;
 	constructor() {
 		this.map = new Map();
 	}
 
-	add<T>(
+	add<P extends object = object, C extends React.FC<P> = React.FC<P>>(
 		descriptor: ComponentDescriptor,
-		component: React.FC | React.FC<T>
+		component: C
 	): this {
 		const id = generateId(descriptor);
+		// component = {
+		// 	...component,
+		// 	descriptor,
+		// };
 		if (!this.hasId(id)) {
 			if (this.hasName(descriptor.name)) {
 				throw new Error("Name already exists");
@@ -36,7 +40,9 @@ export class ComponentMap {
 		return this;
 	}
 
-	getById(id: string): DescribedComponent {
+	getById<T extends object, C extends React.FC<T>>(
+		id: string
+	): DescribedComponent<T, C> {
 		return this.map.get(id)!;
 	}
 
@@ -44,7 +50,9 @@ export class ComponentMap {
 		return this.map.has(id);
 	}
 
-	getByDescriptor(descriptor: ComponentDescriptor): DescribedComponent {
+	getByDescriptor<T extends object, C extends React.FC<T>>(
+		descriptor: ComponentDescriptor
+	): DescribedComponent<T, C> {
 		for (const [, describedComponent] of this.map.entries()) {
 			if (describedComponent.descriptor === descriptor) {
 				return describedComponent;
@@ -53,7 +61,9 @@ export class ComponentMap {
 		throw new Error("Descriptor not found");
 	}
 
-	getByName(name: string): DescribedComponent {
+	getByName<T extends object, C extends React.FC<T>>(
+		name: string
+	): DescribedComponent<T, C> {
 		for (const [, describedComponent] of this.map.entries()) {
 			if (describedComponent.descriptor.name === name) {
 				return describedComponent;
@@ -78,16 +88,16 @@ export class ComponentMap {
 		}
 	}
 
-	getComponentByDescriptor(descriptor: ComponentDescriptor): React.FC {
+	getComponentByDescriptor(descriptor: ComponentDescriptor) {
 		return this.getByDescriptor(descriptor).component;
 	}
-	getComponentById(id: string): React.FC {
+	getComponentById(id: string) {
 		return this.getById(id).component;
 	}
-	getComponentByName(name: string): React.FC {
+	getComponentByName(name: string) {
 		return this.getByName(name).component;
 	}
-	getAllComponents(): React.FC[] {
+	getAllComponents<T extends object, C extends React.FC<T>>(): C[] {
 		return this.getAll().map(
 			(describedComponent) => describedComponent.component
 		);
@@ -98,16 +108,20 @@ export class ComponentMap {
 		);
 	}
 
-	getRandomComponent(): React.FC {
+	getRandomComponent<T extends object>(): React.FC<T> {
 		const components = this.getAllComponents();
 		const randomIndex = Math.floor(Math.random() * components.length);
 		return components[randomIndex];
 	}
 
-	getAll(): DescribedComponent[] {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	getAll(): DescribedComponent<any, any>[] {
 		return Array.from(this.map.values());
 	}
-	getRandom(): DescribedComponent {
+	getRandom<T extends object, C extends React.FC<T>>(): DescribedComponent<
+		T,
+		C
+	> {
 		const components = this.getAll();
 		const randomIndex = Math.floor(Math.random() * components.length);
 		return components[randomIndex];
@@ -121,7 +135,7 @@ export const componentMap = new ComponentMap();
 
 componentMap
 	.add({ name: "cat", description: "A picture of a cute cat" }, ALovelyCat)
-	.add(
+	.add<PetFinderFormProps>(
 		{
 			name: "petFinder",
 			description:
