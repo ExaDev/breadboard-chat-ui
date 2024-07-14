@@ -51,7 +51,7 @@ export type ContextPayload = {
 	generation_config?: GeneratorConfig;
 };
 
-const defaultSafetySettings = [
+export const defaultSafetySettings = [
 	{
 		category: HarmCategory.harassment,
 		threshold: SafetyThreshold.blockNone,
@@ -69,7 +69,8 @@ const defaultSafetySettings = [
 		threshold: SafetyThreshold.blockNone,
 	},
 ];
-const defaultGeneratorConfig = {
+
+export const defaultGeneratorConfig = {
 	responseMimeType: ResponseType.textPlain,
 };
 

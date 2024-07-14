@@ -8,12 +8,13 @@ import {
 	BreadboardContextType,
 	BreadboardQuery,
 	BreadboardUrl,
-	isLlmContext,
 	LlmContext,
 	LlmContextItem,
+	LlmContextItemWithRole,
 	LlmRole,
 } from "../types";
 import {
+	defaultSafetySettings,
 	makeAgentKitInput,
 	QueryBody,
 	SystemInstruction,
@@ -128,50 +129,17 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 	};
 
 	const handleOutput = (outputs: unknown) => {
-		// outputs.response.candidates[0].content.parts[0].text
-		if (!outputs) {
-			console.error("No outputs");
-			return;
-		}
-		if (typeof outputs != "object") {
-			console.error("Invalid outputs", outputs);
-			return;
-		}
-		if (!("response" in outputs)) {
-			console.error("No response in outputs", outputs);
-			return;
-		}
-		if (typeof outputs.response != "object" || outputs.response === null) {
-			console.error("Invalid response", outputs.response);
-			return;
-		}
-		if (!("candidates" in outputs.response)) {
-			console.error("No candidates in response", outputs.response);
-			return;
-		}
-		if (!Array.isArray(outputs.response.candidates)) {
-			console.error("Candidates is not an array", outputs.response.candidates);
-			return;
-		}
-		if (outputs.response.candidates.length === 0) {
-			console.error("No candidates in response", outputs.response.candidates);
-			return;
+		if (!isLlmRespons(outputs)) {
+			console.error("Invalid response", outputs);
+			throw new Error("Invalid response")
 		}
 
-		const context: LlmContext = outputs.response.candidates.map(
-			(candidate: { content: { parts: { text: string }[] } }) => ({
-				role: "model",
-				parts: candidate.content.parts.map((part) => ({
-					text: part.text,
-				})),
-			})
-		);
-
-		if (!isLlmContext(context)) {
-			console.warn("Context might not be valid", context);
-			// return;
-		}
-
+		const context: LlmContextItemWithRole[] = [
+			{
+				role: LlmRole.model,
+				parts: outputs.context.parts,
+			},
+		];
 		handleLlmResponse(context);
 	};
 
@@ -184,6 +152,25 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 			boardURL: url,
 			inputs: makeAgentKitInput({
 				context: llmContext,
+				responseMimeType: "application/json",
+				safetySettings: defaultSafetySettings,
+				systemInstruction: {
+					parts: [
+						{
+							text: [
+								"Based on the user's input respond with the name of the most appropriate component.",
+								"Include a rationale and a certainty value.",
+								"Your response should be an object which conforms to the schema below.",
+							].join("\n"),
+						},
+						{
+							text: makeSchema(componentMap),
+						},
+						{
+							text: JSON.stringify(componentMap.getAllDescriptors(), null, 2),
+						},
+					],
+				} satisfies SystemInstruction,
 			}),
 			outputHandler: (outputs) => handleOutput(outputs),
 		});
@@ -202,6 +189,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 	const handler = <T,>(obj: T) => {
 		console.log(obj);
 	};
+
 	return (
 		<BreadboardContext.Provider
 			value={{
@@ -220,3 +208,61 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		</BreadboardContext.Provider>
 	);
 };
+
+function isLlmContextItem(context: unknown): context is LlmContextItem {
+	if (!context) {
+		console.error("Context was null", context || "null");
+		return false;
+	}
+	if (typeof context !== "object") {
+		console.error("Context was not an object", context);
+		return false;
+	}
+	if (!("parts" in context)) {
+		console.error("Context did not have parts", context);
+		return false;
+	}
+	if (!Array.isArray(context.parts)) {
+		console.error("Context parts was not an array", context);
+		return false;
+	}
+	if (context.parts.some((part) => typeof part !== "object")) {
+		console.error("Context part was not an object", context);
+		return false;
+	}
+	if (context.parts.some((part) => !("text" in part))) {
+		console.error("Context part did not have text", context);
+		return false;
+	}
+	if (context.parts.some((part) => typeof part.text !== "string")) {
+		console.error("Context part text was not a string", context);
+		return false;
+	}
+	return true;
+}
+
+function isLlmRespons(
+	outputs: unknown
+): outputs is { context: LlmContextItem } {
+	if (!outputs) {
+		console.error("Output was null", outputs || "null");
+		return false;
+	}
+	if (typeof outputs !== "object") {
+		console.error("Output was not an object", outputs);
+		return false;
+	}
+	if (!("context" in outputs)) {
+		console.error("Output did not have a context", outputs);
+		return false;
+	}
+	if (!isLlmContextItem(outputs.context)) {
+		console.error(
+			"Invalid context",
+			outputs.context ? JSON.stringify(outputs.context, null, 2) : "null"
+		);
+		return false;
+	}
+
+	return true;
+}

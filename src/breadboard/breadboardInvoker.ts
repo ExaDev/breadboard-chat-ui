@@ -106,23 +106,22 @@ export async function invokeBreadboard({
 	// });
 
 	for await (const result of run(runConfig)) {
-		const { type, data, reply } = result as HarnessRunResult;
+		const { type, data, reply }: HarnessRunResult = result;
 		if (type === "input") {
 			await reply({ inputs });
 		} else if (type === "output") {
+			console.debug({ output: data.outputs });
 			const outputs = await inflateData(store, data.outputs);
 			// return inflateData(store, data.outputs);
 			outputHandler(outputs as OutputValues);
 		} else if (type === "error") {
 			console.error({
-				$error: data.error,
+				error: data.error,
 			});
 		} else if (type === "end") {
-			console.error({
-				$error: "Run completed without producing output.",
-			});
+			console.debug({ end: data });
 		} else {
-			console.warn("UNKNOWN RESULT", type, data);
+			console.warn({ [type]: data });
 		}
 	}
 	// return {
