@@ -7,6 +7,7 @@ import Button from "../input/Button";
 import TextInput from "../input/TextInput";
 import chatStyles from "./chat.module.scss";
 import Reply from "./Reply";
+import { componentMap } from "./chatResponseMap";
 
 const ChatComponent: React.FC = () => {
 	const breadboard = useBreadboard();
@@ -81,15 +82,31 @@ const ChatComponent: React.FC = () => {
 								</Reply>
 							);
 						} else if (item.role === "model" && part.text) {
+							const repsonse = JSON.parse(part.text);
+							if (
+								repsonse.hasOwnProperty("component") &&
+								repsonse.hasOwnProperty("rationale")
+							) {
+								const SelectedComponent = componentMap.getByName(
+									JSON.parse(part.text).component
+								).component;
+								return (
+									<>
+										<Reply
+											key={`${itemIndex}.${partIndex}.text`}
+											owner={item.role}
+										>
+											{JSON.parse(part.text).rationale}
+										</Reply>
+
+										<SelectedComponent />
+									</>
+								);
+							}
 							return (
-								<>
-								<Reply key={`${itemIndex}.${partIndex}.text`} owner={item.role}>
-									<pre>{part.text}</pre>
+								<Reply owner="model" key={`${itemIndex}.${partIndex}`}>
+									{part.text}
 								</Reply>
-								<Reply key={`${itemIndex}.${partIndex}.html`} owner={item.role}>
-									<div dangerouslySetInnerHTML={{ __html: part.text }} />
-								</Reply>
-								</>
 							);
 						}
 					});
