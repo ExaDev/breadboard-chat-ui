@@ -82,13 +82,13 @@ const ChatComponent: React.FC = () => {
 								</Reply>
 							);
 						} else if (item.role === "model" && part.text) {
-							const repsonse = JSON.parse(part.text);
+							const response = JSON.parse(part.text);
 							if (
-								repsonse.hasOwnProperty("component") &&
-								repsonse.hasOwnProperty("rationale")
+								Object.prototype.hasOwnProperty.call(response, "component") &&
+								Object.prototype.hasOwnProperty.call(response, "rationale")
 							) {
 								const SelectedComponent = componentMap.getByName(
-									JSON.parse(part.text).component
+									response.component
 								).component;
 								return (
 									<>
@@ -96,7 +96,7 @@ const ChatComponent: React.FC = () => {
 											key={`${itemIndex}.${partIndex}.text`}
 											owner={item.role}
 										>
-											{JSON.parse(part.text).rationale}
+											<strong>Model Rationale: </strong>{response.rationale}
 										</Reply>
 
 										<SelectedComponent />
