@@ -56,7 +56,7 @@ const componentMapQueryConfig: Partial<QueryBody> = {
 				].join("\n"),
 			},
 			{
-				text: makeSchema(componentMap),
+				text: JSON.stringify(makeSchema(componentMap))
 			},
 			{
 				text: JSON.stringify(componentMap.getAllDescriptors(), null, 2),
@@ -131,7 +131,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 	const handleOutput = (outputs: unknown) => {
 		if (!isLlmRespons(outputs)) {
 			console.error("Invalid response", outputs);
-			throw new Error("Invalid response")
+			throw new Error("Invalid response");
 		}
 
 		const context: LlmContextItemWithRole[] = [
@@ -160,15 +160,22 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 							text: [
 								"Based on the user's input respond with the name of the most appropriate component.",
 								"Include a rationale and a certainty value.",
-								"Your response should be an object which conforms to the schema below.",
 								"Provide parameters for the component if necessary.",
 							].join("\n"),
 						},
 						{
-							text: makeSchema(componentMap),
+							text: "This is the list of components",
 						},
 						{
-							text: JSON.stringify(componentMap.getAllDescriptors(), null, 2),
+							text: JSON.stringify(componentMap.getAllDescriptors()),
+						},
+						{
+							text: [
+								"Your response must be an object which conforms to the following schema.",
+							].join("\n"),
+						},
+						{
+							text: JSON.stringify(makeSchema(componentMap)),
 						},
 					],
 				} satisfies SystemInstruction,

@@ -1,8 +1,8 @@
 import { JSONSchema7 } from "json-schema";
 import { ComponentMap } from "../../components/chat/chatResponseMap";
 
-export function makeSchema(componentMap: ComponentMap): string {
-	return JSON.stringify({
+export function makeSchema(componentMap: ComponentMap): JSONSchema7 {
+	return {
 		$schema: "http://json-schema.org/draft-07/schema#",
 		type: "object",
 		properties: {
@@ -21,9 +21,13 @@ export function makeSchema(componentMap: ComponentMap): string {
 			},
 			parameters: {
 				description: "Optional parameters for the component",
-				type: "object"
-			}
+				type: "object",
+				oneOf: componentMap.getAllDescriptors().filter((descriptor) => ({
+					description: `Parameters for the ${descriptor.name} component`,
+					...descriptor.parameters,
+				})),
+			},
 		},
 		required: ["component", "rationale", "certainty"],
-	} satisfies JSONSchema7);
+	} satisfies JSONSchema7;
 }
