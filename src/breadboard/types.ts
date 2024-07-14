@@ -3,51 +3,61 @@ export type BreadboardQueryData = string;
 export type BreadboardApiKey = string;
 
 export const VideoMimeType = {
-	videoMov: "video/mov",
-	videoMpeg: "video/mpeg",
-	videoMp4: "video/mp4",
-	videoMpg: "video/mpg",
-	videoAvi: "video/avi",
-	videoWmv: "video/wmv",
-	videoMpegps: "video/mpegps",
-	videoFlv: "video/flv",
+	mov: "video/mov",
+	mpegVideo: "video/mpeg",
+	mp4: "video/mp4",
+	mpg: "video/mpg",
+	avi: "video/avi",
+	wmv: "video/wmv",
+	mpegps: "video/mpegps",
+	flv: "video/flv",
 } as const;
 export type VideoMimeType = (typeof VideoMimeType)[keyof typeof VideoMimeType];
 
 export const ImageMimeType = {
-	imagePng: "image/png",
-	imageJpeg: "image/jpeg",
-	textPlain: "text/plain",
+	png: "image/png",
+	jpeg: "image/jpeg",
 } as const;
 export type ImageMimeType = (typeof ImageMimeType)[keyof typeof ImageMimeType];
+export type ImageDataPart = DataPart<ImageMimeType>;
+
+export const TextMimeType = {
+	text: "text/plain",
+} as const;
+export type TextMimeType = (typeof TextMimeType)[keyof typeof TextMimeType];
+export type TextDataPart = DataPart<TextMimeType>;
 
 export const AudioMimeType = {
-	audioMpeg: "audio/mpeg",
-	audioMp3: "audio/mp3",
-	audioWav: "audio/wav",
+	mpegAudio: "audio/mpeg",
+	mp3: "audio/mp3",
+	wav: "audio/wav",
 } as const;
 export type AudioMimeType = (typeof AudioMimeType)[keyof typeof AudioMimeType];
+export type AudioDataPart = DataPart<AudioMimeType>;
 
 export const ApplicationMimeType = {
 	applicationPdf: "application/pdf",
 } as const;
 export type ApplicationMimeType =
 	(typeof ApplicationMimeType)[keyof typeof ApplicationMimeType];
+export type ApplicationDataPart = DataPart<ApplicationMimeType>;
 
 export const FileMimeType = {
+	...TextMimeType,
 	...VideoMimeType,
 	...ImageMimeType,
 	...AudioMimeType,
 	...ApplicationMimeType,
 } as const;
-
 export type FileMimeType = (typeof FileMimeType)[keyof typeof FileMimeType];
+
 export type StringPart = {
 	text: string;
 	inlineData?: never;
 	fileData?: never;
 	videoMetadata?: never;
 };
+
 export type InlineDataPart<F extends FileMimeType = FileMimeType> = {
 	text?: never;
 	fileData?: never;
@@ -66,24 +76,31 @@ export type FileDataPart<F extends FileMimeType = FileMimeType> = {
 	};
 };
 
-export type VideoMetadataType = {
-	videoMetadata?: {
-		startOffset?: {
-			seconds: number;
-			nanos: number;
-		};
-		endOffset?: {
-			seconds: number;
-			nanos: number;
-		};
+export type VideoStartOffset = {
+	startOffset: {
+		seconds: number;
+		nanos: number;
 	};
 };
 
+export type VideoEndOffset = {
+	endOffset: {
+		seconds: number;
+		nanos: number;
+	};
+};
+
+export type VideoMetadataType = {
+	videoMetadata?: VideoStartOffset | VideoEndOffset;
+};
+
 export const NonVideoMimeType = {
+	...TextMimeType,
 	...ImageMimeType,
 	...AudioMimeType,
 	...ApplicationMimeType,
 } as const;
+
 export type NonVideoMimeType =
 	(typeof NonVideoMimeType)[keyof typeof NonVideoMimeType];
 
