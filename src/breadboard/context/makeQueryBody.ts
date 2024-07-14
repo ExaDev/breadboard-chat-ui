@@ -29,12 +29,12 @@ export type SystemInstruction = {
 	}[];
 };
 
-type SafetySetting = {
+export type SafetySetting = {
 	category: HarmCategory;
 	threshold: SafetyThreshold;
 };
 
-type GeneratorConfig = {
+export type GeneratorConfig = {
 	responseMimeType?: ResponseType;
 	temperature?: number;
 	topP?: number;
@@ -80,6 +80,9 @@ export type QueryBody = {
 	system_instruction?: SystemInstruction;
 };
 
+/**
+ * @documentation https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/inference#request
+ */
 export function makeQueryBody({
 	contents,
 	system_instruction,
