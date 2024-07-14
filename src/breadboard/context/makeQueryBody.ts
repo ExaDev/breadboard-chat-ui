@@ -97,7 +97,15 @@ export function makeQueryBody({
 	};
 }
 
-export type AgentKitInput = {
+export type AgentKitInput = ({
+	text: string;
+	context?: undefined;
+} | {
+	context: LlmContext;
+	text?: undefined;
+});
+
+export type AgentKitParams = {
 	responseMimeType?: ResponseType;
 	model?: GeminiModel;
 	retry?: `${number}`;
@@ -106,16 +114,7 @@ export type AgentKitInput = {
 	systemInstruction?: SystemInstruction;
 	tools?: string[];
 	useStreaming?: "on" | "off";
-} & (
-	| {
-			text: string;
-			context?: undefined;
-		}
-	| {
-			context: LlmContext;
-			text?: undefined;
-	}
-);
+} & AgentKitInput;
 
 export const GeminiModel = {
 	flash: "gemini-1.5-flash-latest",
@@ -133,7 +132,7 @@ export function makeAgentKitInput({
 	text,
 	tools,
 	useStreaming,
-}: AgentKitInput) {
+}: Partial<AgentKitParams> & AgentKitInput) {
 	return {
 		responseMimeType,
 		model,
