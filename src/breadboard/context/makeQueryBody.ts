@@ -133,7 +133,7 @@ export function makeAgentKitInput({
 	systemInstruction,
 	text,
 	tools,
-	useStreaming = "off",
+	useStreaming,
 }: Partial<AgentKitParams> & AgentKitInput) {
 	return {
 		responseMimeType,
