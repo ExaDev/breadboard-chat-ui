@@ -124,6 +124,10 @@ export type LlmContextItem = {
 	parts: LlmContextPart[];
 };
 
+export type LlmContextItemWithRole = Omit<LlmContextItem, "role"> & {
+	role: LlmRole;
+};
+
 export type LlmContext = LlmContextItem[];
 
 export type BreadboardQuery = Omit<LlmContextItem, "role"> & { role: "user" };
