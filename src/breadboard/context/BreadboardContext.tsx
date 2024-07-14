@@ -81,7 +81,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 	const [query, setQuery] = React.useState<BreadboardQuery | null>(null);
 	// locallyStoredKey is assigned asynchronously so we need to use useEffect to set the key
 	const [key, setApiKey] = React.useState<BreadboardApiKey | null>(null);
-	// I don't like this but it works for now NEEDS REFACTOR
+	// TODO @jamesjacko: I don't like this but it works for now NEEDS REFACTOR
 	useEffect(() => {
 		if (locallyStoredKey) {
 			setApiKey(locallyStoredKey);
