@@ -171,7 +171,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 		);
 
 		if (!isLlmContext(context)) {
-			console.error("Context might not be valid", context);
+			console.warn("Context might not be valid", context);
 			// return;
 		}
 
