@@ -15,7 +15,6 @@ import {
 } from "../types";
 import { makeQueryBody, QueryBody, SystemInstruction } from "./makeQueryBody";
 import { makeSchema } from "./makeSchema";
-import { useIndexedDB } from "./useIndexedDB";
 export const BreadboardContext =
 	React.createContext<BreadboardContextType>(null);
 
@@ -64,29 +63,23 @@ const componentMapQueryConfig: Partial<QueryBody> = {
 export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 	children,
 }) => {
-	const [locallyStoredURL, setStoredValue] =
+	const [locallyStoredURL, setStoredBoardUrl] =
 		useLocalStorage<BreadboardUrl | null>(
 			"breadboardUrl",
 			"https://exadev.github.io/boards/chat-ui.bgl.json"
 		);
-	const [locallyStoredKey, setStoredKey] =
-		useIndexedDB<BreadboardApiKey | null>({
-			dbName: "settings",
-			objectStoreName: "Secrets",
-			name: "GEMINI_KEY",
-			initialValue: null,
-		});
+	const [locallyStoredKey, setStoredApiKey] =
+		useLocalStorage<BreadboardApiKey | null>("GEMINI_KEY", null);
 
-	const [url, setUrl] = React.useState<BreadboardUrl | null>(locallyStoredURL);
+	const [url, setBoardUrl] = React.useState<BreadboardUrl | null>(
+		locallyStoredURL
+	);
 	const [query, setQuery] = React.useState<BreadboardQuery | null>(null);
-	// locallyStoredKey is assigned asynchronously so we need to use useEffect to set the key
-	const [key, setApiKey] = React.useState<BreadboardApiKey | null>(null);
-	// TODO @jamesjacko: I don't like this but it works for now NEEDS REFACTOR
-	useEffect(() => {
-		if (locallyStoredKey) {
-			setApiKey(locallyStoredKey);
-		}
-	}, [locallyStoredKey]);
+
+	const [key, setApiKey] = React.useState<BreadboardApiKey | null>(
+		locallyStoredKey
+	);
+
 	const [llmContext, setLlmContext] = React.useState<LlmContext>([]);
 	const [loading, setLoading] = React.useState<boolean>(false);
 
@@ -200,13 +193,13 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 	}, [query]);
 
 	const setBreadboardUrl = (url: BreadboardUrl) => {
-		setUrl(url);
-		setStoredValue(url);
+		setBoardUrl(url);
+		setStoredBoardUrl(url);
 	};
 
 	const setBreadboardApiKey = (key: BreadboardApiKey) => {
 		setApiKey(key);
-		setStoredKey(key);
+		setStoredApiKey(key);
 	};
 
 	const handler = <T,>(obj: T) => {
