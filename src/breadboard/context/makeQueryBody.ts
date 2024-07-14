@@ -97,13 +97,15 @@ export function makeQueryBody({
 	};
 }
 
-export type AgentKitInput = ({
-	text: string;
-	context?: undefined;
-} | {
-	context: LlmContext;
-	text?: undefined;
-});
+export type AgentKitInput =
+	| {
+			text: string;
+			context?: never;
+	  }
+	| {
+			context: LlmContext;
+			text?: never;
+	  };
 
 export type AgentKitParams = {
 	responseMimeType?: ResponseType;
@@ -123,15 +125,15 @@ export type GeminiModel = (typeof GeminiModel)[keyof typeof GeminiModel];
 
 export function makeAgentKitInput({
 	responseMimeType,
-	model,
-	retry,
+	model = GeminiModel.flash,
+	retry = "0",
 	context,
-	safetySettings,
+	safetySettings = defaultSafetySettings,
 	stopSequences,
 	systemInstruction,
 	text,
 	tools,
-	useStreaming,
+	useStreaming = "off",
 }: Partial<AgentKitParams> & AgentKitInput) {
 	return {
 		responseMimeType,
