@@ -96,3 +96,54 @@ export function makeQueryBody({
 		system_instruction,
 	};
 }
+
+export type AgentKitInput = {
+	responseMimeType?: ResponseType;
+	model?: GeminiModel;
+	retry?: `${number}`;
+	safetySettings?: SafetySetting[];
+	stopSequences?: string[];
+	systemInstruction?: SystemInstruction;
+	tools?: string[];
+	useStreaming?: "on" | "off";
+} & (
+	| {
+			text: string;
+			context?: undefined;
+		}
+	| {
+			context: LlmContext;
+			text?: undefined;
+	}
+);
+
+export const GeminiModel = {
+	flash: "gemini-1.5-flash-latest",
+} as const;
+export type GeminiModel = (typeof GeminiModel)[keyof typeof GeminiModel];
+
+export function makeAgentKitInput({
+	responseMimeType,
+	model,
+	retry,
+	context,
+	safetySettings,
+	stopSequences,
+	systemInstruction,
+	text,
+	tools,
+	useStreaming,
+}: AgentKitInput) {
+	return {
+		responseMimeType,
+		model,
+		retry,
+		context,
+		safetySettings,
+		stopSequences,
+		systemInstruction,
+		text,
+		tools,
+		useStreaming,
+	};
+}
