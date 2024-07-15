@@ -1,14 +1,14 @@
 import { JSONSchema7 } from "json-schema";
-import { ComponentMap } from "../../components/chat/chatResponseMap";
+import { DescribedComponentMap } from "../../components/DescribedComponent";
 
-export function makeSchema(componentMap: ComponentMap): JSONSchema7 {
+export function makeSchema(componentMap: DescribedComponentMap): JSONSchema7 {
 	return {
 		$schema: "http://json-schema.org/draft-07/schema#",
 		type: "object",
 		properties: {
 			component: {
 				type: "string",
-				enum: componentMap.getAllNames(),
+				enum: componentMap.getNames(),
 			},
 			rationale: {
 				type: "string",
@@ -16,16 +16,17 @@ export function makeSchema(componentMap: ComponentMap): JSONSchema7 {
 			certainty: {
 				type: "number",
 				minimum: 0,
-				maximum: 1,
-				examples: [0, 0.1, 0.5, 0.9, 1],
+				maximum: 1
 			},
 			parameters: {
 				description: "Optional parameters for the component",
 				type: "object",
-				oneOf: componentMap.getAllDescriptors().filter((descriptor) => ({
-					description: `Parameters for the ${descriptor.name} component`,
-					...descriptor.parameters,
-				})),
+				oneOf: componentMap
+					.getAllJsonSchemaDesciptors()
+					.filter((descriptor) => ({
+						description: `Parameters for the ${descriptor.name} component`,
+						...descriptor.propsSchema,
+					})),
 			},
 		},
 		required: ["component", "rationale", "certainty"],

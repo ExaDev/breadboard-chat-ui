@@ -2,11 +2,11 @@ import clsx from "clsx";
 import React, { useEffect } from "react";
 import { useBreadboard } from "../../breadboard/context/useBreadboard";
 import layoutStyles from "../../styles/layout.module.scss";
+import { DescribedComponentMap } from "../DescribedComponent";
 import Frame from "../Frame";
 import Button from "../input/Button";
 import TextInput from "../input/TextInput";
 import chatStyles from "./chat.module.scss";
-import { componentMap } from "./chatResponseMap";
 import Reply from "./Reply";
 
 const ChatComponent: React.FC = () => {
@@ -83,13 +83,14 @@ const ChatComponent: React.FC = () => {
 							);
 						} else if (item.role === "model" && part.text) {
 							const response = JSON.parse(part.text);
+							console.debug({ response });
 							if (
 								Object.prototype.hasOwnProperty.call(response, "component") &&
 								Object.prototype.hasOwnProperty.call(response, "rationale")
 							) {
-								const SelectedComponent = componentMap.getByName(
+								const SelectedComponent = DescribedComponentMap.get(
 									response.component
-								).component;
+								).element;
 								// component params
 								let componentParams = {};
 								try {

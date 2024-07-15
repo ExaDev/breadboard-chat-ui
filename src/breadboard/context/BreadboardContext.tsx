@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { PropsWithChildren, useEffect } from "react";
 import { componentMap } from "../../components/chat/chatResponseMap";
+import { DescribedComponentMap } from "../../components/DescribedComponent";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { invokeBreadboard } from "../breadboardInvoker";
 import {
@@ -56,7 +57,7 @@ const componentMapQueryConfig: Partial<QueryBody> = {
 				].join("\n"),
 			},
 			{
-				text: JSON.stringify(makeSchema(componentMap))
+				text: JSON.stringify(makeSchema(DescribedComponentMap.getInstance())),
 			},
 			{
 				text: JSON.stringify(componentMap.getAllDescriptors(), null, 2),
@@ -167,7 +168,7 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 							text: "This is the list of components",
 						},
 						{
-							text: JSON.stringify(componentMap.getAllDescriptors()),
+							text: JSON.stringify(DescribedComponentMap.getAllNamesAndDescriptions	()),
 						},
 						{
 							text: [
@@ -175,7 +176,9 @@ export const BreadboardProvider: React.FC<PropsWithChildren> = ({
 							].join("\n"),
 						},
 						{
-							text: JSON.stringify(makeSchema(componentMap)),
+							text: JSON.stringify(
+								makeSchema(DescribedComponentMap.getInstance())
+							),
 						},
 					],
 				} satisfies SystemInstruction,

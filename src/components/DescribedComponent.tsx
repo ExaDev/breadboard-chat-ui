@@ -1,11 +1,55 @@
 import { z, ZodType } from "zod";
+import zodToJsonSchema, { JsonSchema7Type } from "zod-to-json-schema";
+import { LoremFlickr } from "./chat/LoremFlickr";
 
 ////////////////////////////////////////////////////////////////////////////////
+
+// export type ComponentDescriptor<Z extends ZodType> = {
+// 	name: string;
+// 	description: string;
+// 	propsSchema: Z;
+// 	element: React.FC<z.infer<Z>>;
+// };
 
 export type ComponentDescriptor<Z extends ZodType> = {
 	name: string;
 	description: string;
 	propsSchema: Z;
+	element: React.FC<z.infer<Z>>;
+};
+
+// export class ComponentDescriptor<Z extends ZodType>
+// 	implements ComponentDescriptorProps<Z>
+// {
+// 	name: string;
+// 	description: string;
+// 	propsSchema: Z;
+// 	element: React.FC<z.infer<Z>>;
+
+// 	constructor({
+// 		name,
+// 		description,
+// 		propsSchema,
+// 		element,
+// 	}: {
+// 		name: string;
+// 		description: string;
+// 		propsSchema: Z;
+// 		element: React.FC<z.infer<Z>>;
+// 	}) {
+// 		this.name = name;
+// 		this.description = description;
+// 		this.propsSchema = propsSchema;
+// 		this.element = element;
+// 	}
+// 	toJsonSchema(): JsonSchema7Type {
+// 		return zodToJsonSchema(this.propsSchema);
+// 	}
+// }
+export type ComponentJsonSchemaDescriptor<Z extends ZodType> = {
+	name: string;
+	description: string;
+	propsSchema: JsonSchema7Type;
 	element: React.FC<z.infer<Z>>;
 };
 
@@ -15,6 +59,8 @@ export type Descriptor<Z extends ZodType> = Omit<
 	ComponentDescriptor<Z>,
 	"element"
 >;
+
+////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -57,6 +103,7 @@ export class DescribedComponentMap {
 		if (this.has(name)) {
 			throw new Error(`Component already exists: ${name}`);
 		}
+		// return this.set({ name, description, propsSchema, element });
 		return this.set({ name, description, propsSchema, element });
 	}
 	static add<Z extends ZodType>({
@@ -78,11 +125,12 @@ export class DescribedComponentMap {
 		if (!component) {
 			throw new Error(`Component not found: ${name}`);
 		}
-		component.element = (props) => {
-			component.propsSchema.parse(props);
-			return component.element(props);
-		};
 		return component as ComponentDescriptor<Z>;
+		// component.element = (props) => {
+		// 	component.propsSchema.parse(props);
+		// 	return component.element(props);
+		// };
+		// return component as ComponentDescriptor<Z>;
 	}
 	static get<Z extends ZodType>(name: string): ComponentDescriptor<Z> {
 		return DescribedComponentMap.getInstance().get(name);
@@ -93,6 +141,84 @@ export class DescribedComponentMap {
 	}
 	static getAll(): ComponentDescriptor<ZodType>[] {
 		return DescribedComponentMap.getInstance().getAll();
+	}
+
+	getAllDescriptors(): Descriptor<ZodType>[] {
+		return this.getAll().map((component) => ({
+			name: component.name,
+			description: component.description,
+			propsSchema: component.propsSchema,
+		}));
+	}
+	static getAllDescriptors(): Descriptor<ZodType>[] {
+		return DescribedComponentMap.getInstance().getAllDescriptors();
+	}
+
+	getNameAndDescription(name: string): { name: string; description: string } {
+		const component = this.get(name);
+		return {
+			name: component.name,
+			description: component.description,
+		};
+	}
+	static getNameAndDescription(name: string): {
+		name: string;
+		description: string;
+	} {
+		return DescribedComponentMap.getInstance().getNameAndDescription(name);
+	}
+
+	getAllNamesAndDescriptions(): { name: string; description: string }[] {
+		return this.getAll().map((component) => ({
+			name: component.name,
+			description: component.description,
+		}));
+	}
+	static getAllNamesAndDescriptions(): { name: string; description: string }[] {
+		return DescribedComponentMap.getInstance().getAllNamesAndDescriptions
+			? DescribedComponentMap.getInstance().getAllNamesAndDescriptions()
+			: [];
+	}
+
+	getJsonSchema(
+		name: string
+	): JsonSchema7Type & { $schema?: string; definitions?: object } {
+		const component = this.get(name);
+		return zodToJsonSchema(component.propsSchema);
+	}
+	static getJsonSchema(
+		name: string
+	): JsonSchema7Type & { $schema?: string; definitions?: object } {
+		return DescribedComponentMap.getInstance().getJsonSchema(name);
+	}
+
+	getJsonSchemaDescriptor(
+		name: string
+	): ComponentJsonSchemaDescriptor<ZodType> {
+		const component = this.get(name);
+		return {
+			name: component.name,
+			description: component.description,
+			propsSchema: this.getJsonSchema(name),
+			element: component.element,
+		};
+	}
+	static getJsonSchemaDescriptor(
+		name: string
+	): ComponentJsonSchemaDescriptor<ZodType> {
+		return DescribedComponentMap.getInstance().getJsonSchemaDescriptor(name);
+	}
+
+	getAllJsonSchemaDesciptors(): ComponentJsonSchemaDescriptor<ZodType>[] {
+		return this.getAll().map((component) => ({
+			name: component.name,
+			description: component.description,
+			propsSchema: this.getJsonSchema(component.name),
+			element: component.element,
+		}));
+	}
+	static getAllJsonSchemaDesciptors(): ComponentJsonSchemaDescriptor<ZodType>[] {
+		return DescribedComponentMap.getInstance().getAllJsonSchemaDesciptors();
 	}
 
 	getNames(): string[] {
@@ -152,21 +278,20 @@ export class DescribedComponentMap {
 const describedComponentMap = DescribedComponentMap.getInstance();
 describedComponentMap
 	.set({
-		name: "MyComponent",
-		description: "A simple component",
+		name: "Output",
+		description: "A simple output element",
 		propsSchema: z.object({
-			name: z.string(),
-			age: z.number(),
+			text: z.string(),
 		}),
-		element: (props) => {
-			const { name, age } = props;
-			return (
-				<div>
-					<p>Name: {name}</p>
-					<p>Age: {age}</p>
-				</div>
-			);
-		},
+		element: (props) => <output>{props.text}</output>,
+	})
+	.set({
+		name: "Blockquote",
+		description: "A simple blockquote element",
+		propsSchema: z.object({
+			text: z.string(),
+		}),
+		element: (props) => <blockquote>{props.text}</blockquote>,
 	})
 	.add({
 		name: "Input",
@@ -286,6 +411,61 @@ describedComponentMap
 				</table>
 			);
 		},
+	})
+	.add({
+		name: "Lorem Flickr",
+		description: "An image from LoremFlickr",
+		propsSchema: z.object({
+			width: z.number(),
+			height: z.number(),
+			keywords: z.array(z.string()).optional(),
+			style: z
+				.union([
+					z.literal("g"),
+					z.literal("p"),
+					z.literal("red"),
+					z.literal("green"),
+					z.literal("blue"),
+				])
+				.optional(),
+			all: z.boolean().optional(),
+		}),
+		element: (props) => <LoremFlickr {...props} />,
+	})
+	.add({
+		name: "Canvas",
+		description: "A simple canvas element with a script that can be run with a button. Any elements rendered by the script must be within the canvas. Include logic to compute the correct size and locations",
+		propsSchema: z.object({
+			width: z.number(),
+			height: z.number(),
+			id: z.string(),
+			script: z.string()
+		}),
+		element: ({
+			width,
+			height,
+			id,
+			script,
+		}: {
+			width: number;
+			height: number;
+			id?: string;
+			script?: string;
+		}) => {
+			return (
+				<div>
+					<canvas width={width} height={height} id={id} />
+					<button
+						onClick={() => {
+							if (script) {
+								eval(script);
+							}
+						}}
+					>
+						Render
+					</button>
+				</div>
+			);
+		},
 	});
-
 export const ComponentMap = describedComponentMap;
