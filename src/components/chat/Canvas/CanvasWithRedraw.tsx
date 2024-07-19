@@ -10,9 +10,15 @@ const CanvasWithRedraw: React.FC<CanvasWithRedrawProps> = ({ onOutput, ...canvas
 	return (
 		<div className={clsx(layoutStyles.flexVertical, layoutStyles.alignItemsCenter, layoutStyles.justifyCenter)}>
 			<Canvas {...canvasProps} />
-			<Button title="Redraw" onClick={() => onOutput("Redraw")} align="center" />
+			{/* <Button title="Details" onClick={() => onOutput("Redraw")} align="center" /> */}
 		</div>
 	);
 };
 
 export default CanvasWithRedraw;
+
+export type OnOutputType = Pick<CanvasWithRedrawProps, "onOutput">;
+export type OnLoadType = CanvasWithRedrawProps["onLoad"];
+
+export type CanvasParamType = Parameters<typeof CanvasWithRedraw>;
+export type CanvasReturnType = ReturnType<typeof CanvasWithRedraw>;

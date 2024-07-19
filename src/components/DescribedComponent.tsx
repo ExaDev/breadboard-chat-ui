@@ -1,6 +1,7 @@
 import { z, ZodType } from "zod";
 import zodToJsonSchema, { JsonSchema7Type } from "zod-to-json-schema";
 import { LoremFlickr } from "./chat/LoremFlickr";
+import CanvasWithRedraw from "./chat/Canvas/CanvasWithRedraw";
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -434,38 +435,65 @@ describedComponentMap
 	})
 	.add({
 		name: "Canvas",
-		description: "A simple canvas element with a script that can be run with a button. Any elements rendered by the script must be within the canvas. Include logic to compute the correct size and locations",
+		description: "A component which renders an HTML5 canvas with a 2D context",
 		propsSchema: z.object({
-			width: z.number(),
-			height: z.number(),
-			id: z.string(),
-			script: z.string()
+			// width: { type: "number", default: 150 },
+			width: z.number().default(250),
+			height: z.number().default(150),
+			// onLoad: z.function().args(z.object({}, {description: "a CanvasRenderingContext2D object"})).returns(z.void()).optional(),
+			onLoad: z
+				.string()
+				.describe(
+					"an es6 arrow function that takes a HTML5 canvas context object as an argument the drawing must fit within the canvas width and height this must be in a format which is directly executable by an eval statement"
+				),
+			onOutput: z
+				.string()
+				.describe(
+					"an es6 arrow function which alerts an a title for the picture"
+				),
 		}),
-		element: ({
-			width,
-			height,
-			id,
-			script,
-		}: {
-			width: number;
-			height: number;
-			id?: string;
-			script?: string;
-		}) => {
-			return (
-				<div>
-					<canvas width={width} height={height} id={id} />
-					<button
-						onClick={() => {
-							if (script) {
-								eval(script);
-							}
-						}}
-					>
-						Render
-					</button>
-				</div>
-			);
-		},
+		element: (props) => (
+			<CanvasWithRedraw
+				{...props}
+				onLoad={eval(props.onLoad)}
+				onOutput={eval(props.onOutput)}
+			/>
+		),
 	});
+// .add({
+// 	name: "Canvas",
+// 	description: "A simple canvas element with a script that can be run with a button. Any elements rendered by the script must be within the canvas. Include logic to compute the correct size and locations",
+// 	propsSchema: z.object({
+// 		width: z.number(),
+// 		height: z.number(),
+// 		id: z.string(),
+// 		script: z.string()
+// 	}),
+// 	element: ({
+// 		width,
+// 		height,
+// 		id,
+// 		script,
+// 	}: {
+// 		width: number;
+// 		height: number;
+// 		id?: string;
+// 		script?: string;
+// 	}) => {
+// 		return (
+// 			<div>
+// 				<canvas width={width} height={height} id={id} />
+// 				<button
+// 					onClick={() => {
+// 						if (script) {
+// 							eval(script);
+// 						}
+// 					}}
+// 				>
+// 					Render
+// 				</button>
+// 			</div>
+// 		);
+// 	},
+// });
 export const ComponentMap = describedComponentMap;

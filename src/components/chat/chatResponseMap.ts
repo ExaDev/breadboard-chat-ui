@@ -178,16 +178,16 @@ componentMap
 			parameters: {
 				type: "object",
 				properties: {
-					width: { type: "number" },
-					height: { type: "number" },
+					width: { type: "number", default: 150 },
+					height: { type: "number", default: 150 },
 					onLoad: {
 						description:
-							"A callback function to be called when the canvas is loaded",
+							"A callback function to be called when the canvas is loaded with a 2d context parameter",
 						type: "object",
 					},
 					onInput: {
 						description:
-							"A callback function which redraws the canvas with a new attempt from the prompt",
+							"A callback function which redraws the canvas with a new drawing from the input prompt which is not the same as the current drawing",
 						type: "object",
 					},
 				},

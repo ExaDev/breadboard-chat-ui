@@ -16,7 +16,11 @@ const Canvas: React.FC<CanvasProps> = ({
 		if (canvas) {
 			const context = canvas.getContext("2d");
 			if (context && onLoad) {
-				onLoad(context);
+				try {
+					onLoad(context);
+				} catch (error) {
+					console.error(error);
+				}
 			}
 		}
 	}, [canvasRef, onLoad]);
