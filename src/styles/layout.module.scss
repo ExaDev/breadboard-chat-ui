@@ -7,6 +7,24 @@
 	display: flex;
 	gap: 15px;
 }
+.alignItemsCenter {
+	align-items: center;
+}
+.alignItemsStart {
+	align-items: flex-start;
+}
+.alignItemsEnd {
+	align-items: flex-end;
+}
+.justifyCenter {
+	justify-content: center;
+}
+.justifyStart {
+	justify-content: flex-start;
+}
+.justifyEnd {
+	justify-content: flex-end;
+}
 .alignLeft {
 	align-self: flex-start;
 }
