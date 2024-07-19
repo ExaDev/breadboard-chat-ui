@@ -4,6 +4,7 @@ import ALovelyCat from "./ALovelyCat";
 import HelloWorld from "./HelloWorld";
 import { LoremFlickr } from "./LoremFlickr";
 import PetFinderForm from "./PetFinderForm";
+import Canvas from "./Canvas";
 
 export type ComponentDescriptor = {
 	name: string;
@@ -168,6 +169,32 @@ componentMap
 			} satisfies JSONSchema7,
 		},
 		LoremFlickr
+	)
+	.add(
+		{
+			name: "Canvas",
+			description:
+				"A component which renders an HTML5 canvas with a 2D context",
+			parameters: {
+				type: "object",
+				properties: {
+					width: { type: "number" },
+					height: { type: "number" },
+					onLoad: {
+						description:
+							"A callback function to be called when the canvas is loaded",
+						type: "object",
+					},
+					onInput: {
+						description:
+							"A callback function which redraws the canvas with a new attempt from the prompt",
+						type: "object",
+					},
+				},
+				required: ["width", "height"],
+			} satisfies JSONSchema7,
+		},
+		Canvas
 	);
 
 function generateId(descriptor: ComponentDescriptor): string {
