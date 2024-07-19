@@ -8,16 +8,18 @@ type ButtonProps = {
 	title: string;
 	loading?: boolean;
 	align?: "flex-start" | "center" | "flex-end";
+	disabled?: boolean;
 };
 const Button: React.FC<ButtonProps> = ({
 	title,
 	onClick,
 	type = "button",
 	loading,
-	align = "flex-end"
+	align = "flex-end",
+	disabled,
 }: ButtonProps) => {
 	const handleClick = () => {
-		if (onClick) {
+		if (onClick && !disabled && !loading) {
 			onClick();
 		}
 	};
@@ -25,7 +27,7 @@ const Button: React.FC<ButtonProps> = ({
 		alignSelf: align
 	};
 	return (
-		<button type={type} onClick={handleClick} style={alignStyle} className={clsx(styles.button, loading ? styles.loading : undefined)}>
+		<button type={type} disabled={disabled} onClick={handleClick} style={alignStyle} className={clsx(styles.button, loading ? styles.loading : undefined)}>
 			{title}
 			{loading && <Spinner />}
 		</button>

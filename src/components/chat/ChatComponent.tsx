@@ -8,6 +8,7 @@ import Button from "../input/Button";
 import TextInput from "../input/TextInput";
 import chatStyles from "./chat.module.scss";
 import Reply from "./Reply";
+import MessageBeingPrepared from "./MessageBeingPrepared";
 
 const ChatComponent: React.FC = () => {
 	const breadboard = useBreadboard();
@@ -123,6 +124,7 @@ const ChatComponent: React.FC = () => {
 						}
 					});
 				})}
+				{breadboard.loading && <MessageBeingPrepared owner="model" />}
 				<div ref={messagesEndRef} />
 			</div>
 			<div className={layoutStyles.flexHorizontal}>
@@ -135,7 +137,7 @@ const ChatComponent: React.FC = () => {
 					disabled={!breadboard.url}
 					onKeyPress={handleKeyPress}
 				/>
-				<Button title="Send" onClick={sendQuery} loading={breadboard.loading} />
+				<Button title="Send" onClick={sendQuery} disabled={breadboard.loading} />
 			</div>
 		</Frame>
 	);
