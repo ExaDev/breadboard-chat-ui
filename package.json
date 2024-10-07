@@ -12,23 +12,23 @@
     "tsc:watch": "tsc -b --watch"
   },
   "dependencies": {
-    "@google-labs/agent-kit": "^0.8.1",
-    "@google-labs/breadboard": "^0.22.0",
-    "@google-labs/core-kit": "^0.11.0",
-    "@google-labs/gemini-kit": "^0.5.2",
-    "@google-labs/json-kit": "^0.3.3",
+    "@google-labs/agent-kit": "^0.12.3",
+    "@google-labs/breadboard": "^0.27.3",
+    "@google-labs/core-kit": "^0.15.2",
+    "@google-labs/gemini-kit": "^0.8.2",
+    "@google-labs/json-kit": "^0.3.10",
     "@google-labs/template-kit": "^0.3.5",
     "clsx": "^2.1.1",
     "json-refs": "^3.0.15",
     "json-schema": "^0.4.0",
-    "json-schema-to-ts": "^3.1.0",
-    "json-schema-to-zod": "^2.3.1",
+    "json-schema-to-ts": "^3.1.1",
+    "json-schema-to-zod": "^2.4.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.25.1",
-    "sass": "^1.77.8",
+    "react-router-dom": "^6.26.2",
+    "sass": "^1.79.4",
     "zod": "^3.23.8",
-    "zod-to-json-schema": "^3.23.1"
+    "zod-to-json-schema": "^3.23.3"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
